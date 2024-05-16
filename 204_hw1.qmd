@@ -1,0 +1,690 @@
+---
+title: "204_hw1"
+format: html
+editor: visual
+---
+
+## *1.1 (2 points)*
+
+*Simulate one hundred mutually independent Bernoulli outcomes with probability 𝜋 = 0.7.*
+
+```{r}
+library(magrittr)
+library(tibble)
+library(ggplot2)
+# Set the probability of success (pi)
+pi <- 0.7
+
+set.seed(1)
+
+# Simulate 100 Bernoulli outcomes
+outcomes <- rbinom(100, size = 1, prob = pi)
+
+# Display the outcomes
+n = length(outcomes)
+print(outcomes)
+```
+
+### *1.2 (2 points)*
+
+*Write down the mathematical likelihood of your data as a function of 𝜋.*
+
+$$
+L(\pi; \tilde{x}) = \prod_{i = 1}^n \pi^{x_i} (1-\pi)^{1-x_i}
+$$
+
+## *1.3 (2 points)*
+
+*Implement the log-likelihood function 𝑙(𝜋; 𝑥)̃ and graph it as a function of 𝜋 (plugging in your observed data)*
+
+### likelihood graph:
+
+```{r}
+lik = function(pi, x = outcomes) {pi^sum(x) * (1-pi)^sum(1-x)}
+
+library(ggplot2)
+ggplot() +
+  geom_function(fun = lik, n = 1000) +
+  xlim(min(outcomes), max(outcomes)) +
+  theme_bw() +
+  ylab("likelihood") +
+  xlab('pi')
+```
+
+### Log-likelihood function:
+
+$$
+\ell(\pi; \tilde{x}) = lnL(\pi; \tilde{x}) = ln(\prod_{i = 1}^n \pi^{x_i} (1-\pi)^{1-x_i})\\
+=ln (\pi^{\sum_{i=1}^n x_i} (1-\pi)^{\sum_{i=1}^n (1-x_i)}\\
+=\sum_{i=1}^n x_i*ln(\pi) + \sum_{i=1}^n (1-x_i) * ln (1-\pi)
+$$
+
+### Log-likelihood Graph:
+
+```{r}
+loglik = function(pi, x = outcomes)
+{
+  sum(x)*log(pi) + sum(1-x)*log(1-pi)
+}
+
+ll_plot = ggplot() +
+  geom_function(fun = loglik, n = 1000) +
+  xlim(min(outcomes), max(outcomes)) +
+  theme_bw() +
+  ylab("log-likelihood") +
+  xlab('pi')
+ll_plot
+```
+
+*1.4 (2 points)*
+
+*Find the maximum likelihood estimate of 𝜋 using calculus.*
+
+$$
+\ell(\pi; \tilde{x}) = \sum_{i=1}^n x_i*ln(\pi) + \sum_{i=1}^n (1-x_i) * ln (1-\pi)\\
+\frac{\partial}{\partial\pi} \sum_{i=1}^n x_iln(\pi) + \sum_{i=1}^n (1-x_i)  ln (1-\pi)\\
+\frac{\sum_{i=1}^n x_i}{\pi} - \frac{\sum_{i=1}^n1-x}{1-\pi}\\
+then\\
+\frac{\sum_{i=1}^n x_i}{\pi} - \frac{\sum_{i=1}^n1-x}{1-\pi} = 0\\
+{(1-\pi) \sum_{i=1}^n x_i - \pi \sum_{i=1}^n (1-x_i)} = 0\\
+\sum_{i=1}^n x_i - \pi \sum_{i=1}^n x_i - n\pi + \pi \sum_{i=1}^n x_i = 0\\
+\hat{\pi}_{ML} = \frac{\sum_{i=1}^n x_i}{n}
+$$
+
+Second derivative:
+
+$$
+\frac{\partial}{\partial^2\pi} \frac{\sum_{i=1}^n x_i}{\pi} - \frac{\sum_{i=1}^n1-x}{1-\pi}\\
+=-(\pi)^{-2}\sum_{i=1}^n x_i  - (1-\pi)^{-2}{\sum_{i=1}^n 1-x_i}\\
+=-\frac{\sum_{i=1}^n x_i}{\pi^2} - \frac{\sum_{i=1}^n 1-x_i}{(1-\pi)^2}
+$$
+
+The value of the second derivative is negative.
+
+*1.5 (2 points)*
+
+*Compute the maximum likelihood estimate of 𝜋 from your simulated data*
+
+```{r}
+est_pi = sum(outcomes)/n
+print(est_pi)
+```
+
+*1.6 (2 points)*
+
+*Find the asymptotic standard error of the maximum likelihood estimator 𝜋𝑀̂ 𝐿 using calculus.*
+
+Find the Cramer-Rao Lower Bound (variance):
+
+$$
+CRLB = \frac{1}{nI(\pi)}\\
+f(x;\pi) = \pi^x (1-\pi)^{1-x}\\
+lnf(x;\pi) = xln\pi + (1-x)ln(1-\pi)\\
+\frac{\partial}{\partial\pi}lnf(x;\pi)=\frac{x}{\pi}-\frac{1-x}{1-\pi}\\
+\frac{\partial^2}{\partial\pi^2}lnf(x;\pi)=-\frac{x}{\pi^2}-\frac{1-x}{(1-\pi)^2}\\
+$$ $$
+I(\pi) = -E [\frac{\partial^2}{\partial\pi^2}lnf(x;\pi)]\\
+= -E [-\frac{x}{\pi^2}-\frac{1-x}{(1-\pi)^2}] = \frac{E(x)}{E(\pi^2)}+\frac{E(1-x)}{E(1-\pi)^2}\\
+=\frac{E(x)}{\pi^2}+\frac{1-E(x)}{(1-\pi)^2} = \frac{\pi}{\pi^2}+\frac{1-\pi}{(1-\pi)^2}\\
+= \frac{1}{\pi}+\frac{1}{(1-\pi)}
+$$
+
+$$
+CRLB = \frac{1}{n[\frac{1}{\pi}+\frac{1}{(1-\pi)}]}=\frac{1}{\frac{n}{\pi}+\frac{n}{(1-\pi)}}\\
+=\frac{1}{\frac{n}{\pi}+\frac{n}{(1-\pi)}}=\frac{1}{\frac{n(1-\pi)}{\pi(1-\pi)}+\frac{\pi*n}{\pi(1-\pi)}}\\
+= \frac{1}{\frac{(n-\pi*n)+\pi*n}{\pi(1-\pi)}} = \frac{1}{\frac{n}{\pi(1-\pi)}} = \frac{\pi(1-\pi)}{n}
+$$
+
+Find the asymptotic standard error:
+
+$$
+\widehat{SE}(\pi_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}} = \sqrt{\frac{0.68(1-0.68)}{100}} = 0.0466
+$$
+
+*1.7 (2 points)*
+
+*Plot the asymptotic standard error as a function of sample size for sample sizes of 10 - 10,000 (using logarithmic spacing for sample size).*
+
+```{r}
+std_er <- function(n, pi=0.68) {sqrt(pi*(1-pi)/n)}
+
+ggplot() +
+  geom_function(fun=std_er) + 
+  scale_x_continuous(trans="log10", limits = c(10,10^4)) + ylab("Standard Error of MLE")+
+                       xlab("Sample Size n") + ggtitle("Asymptotic SE") 
+```
+
+*1.8 (2 points)*
+
+*Find an expression for the sample size necessary to achieve a specified standard error (for a given 𝜋).*
+
+$$
+\widehat{SE}(\hat{\pi}_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}}\\
+Var(\hat{\pi}_{ML}) = \frac{\pi(1-\pi)}{n}\\
+n = \frac{\pi(1-\pi)}{Var(\hat{\pi}_{ML})}
+$$
+
+*Invert the function you derived previously for standard error. In other words, solve the equation SE(𝜋̂) = 𝑓(𝜋, 𝑛) for 𝑛.*
+
+*1.9 (2 points)*
+
+*Implement your sample size function in R and graph it for standard errors of 10 percentage points to 0.1 percentage points.*
+
+```{r}
+sample_size <- function(se_ml,pi=0.68) {(pi*(1-pi)/se_ml^2)}
+
+ggplot() +
+  geom_function(fun=sample_size) + 
+  scale_x_continuous(limits = c(0,001,0.1)) + ylab("Sample Size n")+
+                       xlab("Standard Error") + ggtitle("Sample Size Needed for Specific SE")
+```
+
+*1.10 (2 points)*
+
+*• What sample size do you need to achieve a standard error of 1 percentage point?*
+
+$$
+n = \frac{\pi(1-\pi)}{Var(\hat{\pi}_{ML})} = \frac{0.68(1-0.68)}{0.1^2} = 21.76 \approx 22
+$$
+
+*• What sample size do you need to achieve a standard error of 0.1 percentage point?* (*Use your answer to the previous subsection.)* $$
+n = \frac{\pi(1-\pi)}{Var(\hat{\pi}_{ML})} = \frac{0.68(1-0.68)}{0.001^2} = 217600
+$$
+
+*1.11 (2 points)*
+
+*Estimate the standard error from your simulated data using the asymptotic formula.*
+
+*Compare with the theoretical standard error.*
+
+Asymptotic:
+
+$$
+\widehat{SE}(\pi_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}} = \sqrt{\frac{0.68(1-0.68)}{100}} = 0.0466
+$$
+
+Theoretical standard error:
+
+$$
+\widehat{SE}(\pi_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}} = \sqrt{\frac{0.7(1-0.7)}{100}} = 0.0458
+$$
+
+*1.12 (2 points)*
+
+*Compute an asymptotic 95% confidence interval for 𝜋.*$$
+(\hat{\pi} - 1.96* \widehat{SE}(\pi_{ML}) , \hat{\pi} + 1.96* \widehat{SE}(\pi_{ML}))\\
+(0.68-1.96*0.0466, 0.68+1.96*0.0466) = (0.589, 0.771)
+$$
+
+*1.13 (2 points)*
+
+*Calculate an asymptotic p-value for the null hypothesis 𝐻0 ∶ 𝜋 = 0.5.*
+
+$H_0:\pi = 0.5$
+
+$H_1:\pi = 0.68$
+
+$$
+Z = \frac{0.68 - 0.5}{0.0466} = 3.863
+$$
+
+```{r}
+2*(1-pnorm(3.8626))
+```
+
+*1.14 (2 points)*
+
+*Interpret both results in scientific terms.*
+
+95% CI: we are 95% confident that the true value of $\pi$ lies between 0.589 and 0.711.
+
+P-value: there is a 0.00011 chance that the true value of $\pi$ is 0.5 (which is the null hypothesis) based on the evidence we have. The chance is very small; it is smaller than 5%. Therefore, we have the evidence to reject the null hypothesis at a 5% significance level.
+
+*1.15 (2 points)*
+
+*Find the set of binomial outcomes (values of* $\sum_{i=1}^n X_i$*) for which you would reject the null hypothesis.*
+
+$$
+P(Z = \frac{\hat{\pi} - 0.5}{\sqrt(\frac{0.5(1-0.5)}{100})}) > 0.05\\
+Z = \frac{\hat{\pi} - 0.5}{0.05} > 1.96\\
+\hat{\pi}>1.96*0.05+0.5\\
+\hat{\pi}>0.598\\
+\sum_{i=1}^nX_i= n*\hat{\pi} > 100*0.598 = 59.8 \approx 60
+$$
+
+Or:
+
+$$
+Z = \frac{\hat{\pi} - 0.5}{0.05} < -1.96\\
+\hat{\pi}<-1.96*0.05+0.5\\
+\hat{\pi}<0.402\\
+\sum_{i=1}^nX_i= n*\hat{\pi} < 100*0.402 = 40.2 \approx 40
+$$
+
+If $\sum_{i=1}^n X_i$ $\geq$ 60 or $\leq$ 40, then we will reject the null hypothesis.
+
+*1.16 (2 points):*
+
+*Compute the probability of rejecting the null hypothesis (power), if the data-generating value of 𝜋 equals your estimate. In other words, assume that 𝜋 = 𝜋̂ and use the binomial distribution of* $\sum_{i=1}^n X_i$ *to evaluate the power of the normal-approximation test of 𝐻0 ∶ 𝜋 = 0.5.*
+
+$$
+H_1:\pi = 68\\
+H_0: \pi = 50\\
+\sum_{i=1}^n X_i \sim (E(X), Var(X))\\
+E(X) = n*\pi = 100*0.68 = 68\\
+Var(X) = n*\pi(1-\pi) = 100*0.68*(1-0.68) = 21.76\\
+\sum_{i=1}^n X_i \sim (68, 21.76)
+$$
+
+The probability of rejecting $H_0$ is:
+
+\$\$ K(\pi) = P(\hat{\pi} \geq 60,\pi)\\ =P(\frac{\hat{\pi}-\pi}{\sqrt{21.76}}\geq\frac{60-\pi}{\sqrt{21.76}}; \pi)\\ =1-\Phi(\frac{60-\pi}{\sqrt{21.76}}), 50\leq\pi,\\
+
+K(68) =1-\Phi(\frac{60-68}{\sqrt{21.76}}), 50\leq\pi,\\ =1-\Phi(-1.715)= 0.957 \$\$
+
+```{r}
+1-pnorm(-1.715)
+```
+
+*1.17 (2 points):*
+
+*Graph the power to reject the null hypothesis as a function of sample size, using your sample estimate as the data-generating value. What sample size would you need to achieve 80% power? 90%? 95%? 99%?*
+
+```{r}
+power_function <- function(n, null=0.5, alt=0.68){
+  n=floor(n)
+  se_null <- sqrt(null*(1-null)/n)
+  B <- (n*(null + (qnorm(0.975)*se_null)))%>%
+    ceiling()
+  A <- (n*(null + (qnorm(0.025)*se_null)))%>%
+    floor()
+  power_A <- pbinom(A, n, prob=alt)
+  power_B <- pbinom(B-1, n, prob=alt, lower=FALSE)
+  power_total <- power_A + power_B
+  power_total
+}
+
+samples=c(1:1000)
+
+ggplot() +
+  geom_function(fun = power_function) +
+  scale_x_log10(limits =c(1, 1000))+
+  ylab("Power") +
+  xlab("Sample size n") +
+  theme_bw()
+
+
+powers <- power_function(samples)
+powers >= 0.8
+samples[min(which(powers>=0.8))]
+samples[min(which(powers>=0.9))]
+samples[min(which(powers>=0.95))]
+samples[min(which(powers>=0.99))]
+```
+
+-80% power: n=55
+
+-90% power: n=75
+
+-95% power: n=93
+
+-99% power: n=133
+
+*1.18 (2 points)*
+
+*Repeat the simulation 1000 times. Each time, record:*
+
+*• 𝜋̂ (the MLE of 𝜋)*
+
+*• 𝑆𝐸̂ (𝜋̂) (the estimated standard error of the MLE of 𝜋)*
+
+*• The p-value of the hypothesis test 𝐻0 ∶ 𝜋 = 0.5 vs 𝐻𝐴 ∶ 𝜋 ≠ 0.5*
+
+*• whether you rejected the null hypothesis at the 𝛼 = 0.05 level*
+
+*• whether the confidence interval included the true value 𝜋 = 0.7*
+
+```{r}
+sim_func <- function(n, nsims, pi, null, alpha){
+
+  estimates <- numeric(nsims)
+  errors <- numeric(nsims)
+  reject_null <- numeric(nsims)
+  CI_true_val <- numeric(nsims)
+  
+  for(i in 1:nsims){
+    set.seed(i)
+    x.i <- rbinom(n,1,0.7)
+    est <- mean(x.i)
+    se <- sqrt(est*(1-est)/n)
+    se_null <- sqrt(null*(1-null)/n)
+    ci_radius <- se*qnorm(0.975)
+    ci <- est+c(-ci_radius,ci_radius)
+    z_stat <- abs(est-null/se_null)
+    pval <- pnorm(z_stat, lower=FALSE)*2
+    
+    estimates[i] <- est
+    errors[i] <- se
+    reject_null[i] <- pval<alpha
+    CI_true_val[i] <- (pi>ci[1]&pi<ci[2])
+    }
+
+  true_se <- sqrt(pi*(1-pi)/n)
+  
+  sim_results <-tibble(
+  estimates,
+  errors,
+  reject_null,
+  CI_true_val)
+
+  results <- list(
+    n=n,
+    nsims=nsims,
+    pi=pi,
+    null=null,
+    alpha=alpha,
+    sim_results=sim_results,
+    estimates=estimates,
+    errors=errors,
+    reject_null=reject_null,
+    CI_true_val,
+    true_se=true_se,
+    MLE_mean=mean(estimates),
+    MLE_bias=mean(estimates)-pi,
+    MLE_se=sd(estimates),
+    MLE_var=sd(estimates)^2,
+  
+    SE_bias=mean(errors)-true_se,
+    SE_mean=mean(errors),
+    SE_se=sd(errors),
+    SE_var=sd(errors)^2,
+    p_CI=mean(CI_true_val),
+    p_reject=mean(reject_null)
+    
+    
+    )
+  
+  return(results)
+}
+
+sim_1000_results <- sim_func(n=100, nsims=1000, pi=0.7, null= 0.5, alpha=0.05)
+print(sim_1000_results)
+```
+
+*1.19 (2 points)*
+
+*Create histograms and boxplots of the MLEs and estimated standard errors, with lines indicating the theoretical values.*
+
+```{r}
+MLE <- sim_1000_results[["sim_results"]][["estimates"]]
+MLE_df <- data.frame(MLE = MLE)
+histogram_MLE <- ggplot(MLE_df, aes(x = MLE)) +
+  geom_histogram(binwidth = 0.01, fill = "lightgreen", color = "black") + geom_vline(xintercept = 0.7, color = "red", size = 0.5) +
+  labs(title = "Histogram of MLE", x = "MLE", y = "Frequency")
+
+# Print the histogram
+print(histogram_MLE)
+
+box_MLE <- ggplot(MLE_df, aes(x = MLE)) +
+  geom_boxplot(fill = "lightblue", color = "black") + geom_vline(xintercept = 0.7, color = "red", size = 0.5) +
+  labs(title = "Boxplot of MLE", x = "MLE", y = "Frequency")
+
+# Print the histogram
+print(box_MLE)
+
+Est_se <- sim_1000_results[["sim_results"]][["errors"]]
+se_df <- data.frame(Standard_Error = Est_se)
+histogram_se <- ggplot(se_df, aes(x = Standard_Error)) +
+  geom_histogram(binwidth = 0.001, fill = "lightgreen", color = "black") + geom_vline(xintercept = 0.0458, color = "red", size = 0.5) +
+  labs(title = "Histogram of SE", x = "SE", y = "Frequency")
+
+# Print the histogram
+print(histogram_se)
+box_se <- ggplot(se_df, aes(x = Standard_Error)) +
+  geom_boxplot(binwidth = 0.001, fill = "lightblue", color = "black") + geom_vline(xintercept = 0.0458, color = "red", size = 0.5) +
+  labs(title = "Boxplot of SE", x = "SE", y = "Frequency")
+
+# Print the histogram
+print(box_se)
+
+```
+
+*1.20 (2 points)*
+
+*Using your 1000 simulations:*
+
+*• the mean of the MLE =* 0.69911
+
+*• the bias of the MLE =* -0.00089
+
+*• the empirical variance of the MLE =* 0.002251559
+
+*• the empirical standard error of the MLE =* 0.0474506
+
+*• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛*
+
+0.04556994
+
+*• the bias of the estimated standard error =* -0.0002558186
+
+*• the variance of the estimated standard error =* 4.444166e-06
+
+*• the standard error of the estimated standard error =* 0.002108119
+
+*• the coverage probability of the confidence intervals =* 0.935
+
+*• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1*
+
+*1.21 (2 points)*
+
+*Summarize the performance of your analyses, comparing empirical and theoretical results.*
+
+In a 1000 simulation, the mean of the MLE is 0.69911, which is very close to the theoretical $\pi$ of 0.7. The bias is very close to 0, which means the MLE from the simulation is close to nonbiased. The mean of the standard error is 0.04556994, which is also close to 0.458, the theoretical standard error. Both the bias and the variance of the estimated standard error is close to 0, which means the estimation is very good. The performance of the analyses is great. With 1000 simulation we can provide an estimate that is very close to the true value of the parameter.
+
+*1.22 (2 points)*
+
+*Repeat the simulation with a simulated sample sizes of 10\^3 and 10\^5 binary outcomes, and summarize the results. Compare the empirical results with the theoretical results above.*
+
+```{r}
+sim_1000_results_n1000 <- sim_func(n=1000, nsims=1000, pi=0.7, null= 0.5, alpha=0.05)
+```
+
+n = 10\^3:
+
+*• the mean of the MLE =* 0.699708
+
+*• the bias of the MLE =* -0.000292
+
+*• the empirical variance of the MLE =* 0.000218225
+
+*• the empirical standard error of the MLE =* 0.01477244
+
+*• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛*
+
+0.01448644
+
+*• the bias of the estimated standard error =* -4.939105e-06
+
+*• the variance of the estimated standard error =* 4.187434e-08
+
+*• the standard error of the estimated standard error =* 0.0002046322
+
+*• the coverage probability of the confidence intervals = 0.941*
+
+*• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1*
+
+```{r}
+sim_1000_results_n10_5 <- sim_func(n=100000, nsims=1000, pi=0.7, null= 0.5, alpha=0.05)
+```
+
+n = 10\^5:
+
+*• the mean of the MLE =* 0.7000066
+
+*• the bias of the MLE =* 6.59e-06
+
+*• the empirical variance of the MLE =* 2.181415e-06
+
+*• the empirical standard error of the MLE =* 0.001476961
+
+*• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛*
+
+0.00144912
+
+*• the bias of the estimated standard error =* -1.804733e-08
+
+*• the variance of the estimated standard error =* 4.157186e-12
+
+*• the standard error of the estimated standard error =* 2.038918e-06
+
+*• the coverage probability of the confidence intervals = 0.948*
+
+*• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1*
+
+It is clear that as the sample size increases, the results of the estimation is closer to the theoretical values.
+
+*1.23 (2 points)*
+
+*Repeat the simulation at all three sample sizes for the scenario where the data-generating parameter 𝜋 = 0.5, thus matching the null hypothesis. Empirically assess the false positive rate of the hypothesis test.*
+
+```{r}
+sim_func_0.5 <- function(n, nsims, pi, null, alpha){
+
+  estimates <- numeric(nsims)
+  errors <- numeric(nsims)
+  reject_null <- numeric(nsims)
+  CI_true_val <- numeric(nsims)
+  
+  for(i in 1:nsims){
+    set.seed(i)
+    x.i <- rbinom(n,1,0.5)
+    est <- mean(x.i)
+    se <- sqrt(est*(1-est)/n)
+    se_null <- sqrt(null*(1-null)/n)
+    ci_radius <- se*qnorm(0.975)
+    ci <- est+c(-ci_radius,ci_radius)
+    z_stat <- abs(est-null/se_null)
+    pval <- pnorm(z_stat, lower=FALSE)*2
+    
+    estimates[i] <- est
+    errors[i] <- se
+    reject_null[i] <- pval<alpha
+    CI_true_val[i] <- (pi>ci[1]&pi<ci[2])
+    }
+
+  true_se <- sqrt(pi*(1-pi)/n)
+  
+  sim_results <-tibble(
+  estimates,
+  errors,
+  reject_null,
+  CI_true_val)
+
+  results <- list(
+    n=n,
+    nsims=nsims,
+    pi=pi,
+    null=null,
+    alpha=alpha,
+    sim_results=sim_results,
+    estimates=estimates,
+    errors=errors,
+    reject_null=reject_null,
+    CI_true_val,
+    true_se=true_se,
+    MLE_mean=mean(estimates),
+    MLE_bias=mean(estimates)-pi,
+    MLE_se=sd(estimates),
+    MLE_var=sd(estimates)^2,
+  
+    SE_bias=mean(errors)-true_se,
+    SE_mean=mean(errors),
+    SE_se=sd(errors),
+    SE_var=sd(errors)^2,
+    p_CI=mean(CI_true_val),
+    p_reject=mean(reject_null)
+    
+    
+    )
+  
+  return(results)
+}
+
+sim_1000_results_n100_0.5 <- sim_func_0.5(n=100, nsims=1000, pi=0.5, null= 0.5, alpha=0.05)
+sim_1000_results_n1000_0.5 <- sim_func_0.5(n=1000, nsims=1000, pi=0.5, null= 0.5, alpha=0.05)
+sim_1000_results_n100000_0.5 <- sim_func_0.5(n=100000, nsims=1000, pi=0.5, null= 0.5, alpha=0.05)
+```
+
+n = 100:
+
+*• the mean of the MLE =* 0.49886
+
+*• the bias of the MLE =* -0.00114
+
+*• the empirical variance of the MLE =* 0.00262913
+
+*• the empirical standard error of the MLE =* 0.05127504
+
+*• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛*
+
+0.04973516
+
+*• the bias of the estimated standard error =* -0.0002648438
+
+*• the variance of the estimated standard error =* 1.363786e-07
+
+*• the standard error of the estimated standard error =* 0.0003692948
+
+*• the coverage probability of the confidence intervals =* 0.939
+
+*• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1*
+
+n=1000:
+
+*• the mean of the MLE =* 0.500702
+
+*• the bias of the MLE =* 0.000702
+
+*• the empirical variance of the MLE =* 0.0002626138
+
+*• the empirical standard error of the MLE =* 0.01620536
+
+*• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛*
+
+0.01580307
+
+*• the bias of the estimated standard error =* -8.318114e-06
+
+*• the variance of the estimated standard error =* 1.288066e-10
+
+*• the standard error of the estimated standard error =* 1.13493e-05
+
+*• the coverage probability of the confidence intervals = 0.936*
+
+*• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1*
+
+n=100000
+
+*• the mean of the MLE =* 0.4999326
+
+*• the bias of the MLE =* -6.743e-05
+
+*• the empirical variance of the MLE =* 2.510577e-06
+
+*• the empirical standard error of the MLE =* 0.00158448
+
+*• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛*
+
+0.001581131
+
+*• the bias of the estimated standard error =* -7.945639e-09
+
+*• the variance of the estimated standard error =* 1.210578e-16
+
+*• the standard error of the estimated standard error =* 1.100263e-08
+
+*• the coverage probability of the confidence intervals =* 0.944
+
+*• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1*
+
+False positive rate = 1 - power = 1 - 1 =0

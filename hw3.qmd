@@ -1,0 +1,458 @@
+---
+title: "hw3"
+format: pdf
+editor: visual
+---
+
+1 Modeling binary outcomes
+
+```{r}
+library(ggplot2)
+```
+
+1.1 Implement the odds function, odds function, odds (p) = $\frac{p}{1-p}$, in R.
+
+```{r}
+odds_func = function(pi)
+{
+  pi / (1-pi)
+}
+
+```
+
+1.2 Graph odds(𝑝) from 𝑝 = 0 to 𝑝 = .99.
+
+```{r}
+odds_plot = ggplot() + geom_function (fun = odds_func) + xlim(0, 0.99) +
+  theme_bw() + ylab("odds") + xlab ("probability p")
+odds_plot
+```
+
+*1.3 Which is larger, the odds of an event or the probability of that event? Why?*
+
+The odds of the event is greater than the probability of that event. We can prove it by math:
+
+$$
+p - \frac{p}{1-p} = \frac{p(1-p)}{1-p} - \frac{p}{1-p} = \frac{p-p^2-p}{1-p}\\
+=-\frac{p^2}{1-p}
+$$
+
+When p is between 0 to 0.99, both $p^2$ and 1-p are positive, so $\frac{p}{1-p}$ is always negative. We can also show this on a graph:
+
+```{r}
+ovp_func = function(pi)
+{
+   pi - pi / (1-pi)
+}
+
+ovp_plot = ggplot() + geom_function (fun = ovp_func) + xlim(0, 0.99) +
+  theme_bw() + ylab("probability - odds") + xlab ("probability p")
+ovp_plot
+```
+
+1.4 Implement the inverse odds function
+
+```{r}
+inverse_odds_func = function(omega)
+{
+  omega / (1+omega)
+}
+```
+
+1.5 Graph the inverse odds function from odds = 0 to odds = 2.
+
+```{r}
+in_odds_plot = ggplot() + geom_function (fun = inverse_odds_func) + xlim(0, 2) +
+  theme_bw() + ylab("probability") + xlab ("odds")
+in_odds_plot
+```
+
+1.6 Implement the expit function in code.
+
+```{r}
+expit = function(eta)
+{
+  exp(eta)/(1+exp(eta))
+}
+```
+
+1.7 Graph the expit function from 𝑡 = −5 to 𝑡 = 5.
+
+```{r}
+expit_plot = 
+  ggplot() + 
+  geom_function(fun = expit) + 
+  xlim(-5, 5) + 
+  ylim(0,1) +
+  ylab(expression(expit(eta))) +
+  xlab(expression(eta)) +
+  theme_bw()
+print(expit_plot)
+```
+
+1.8 Use algebra to show that expit(0) = 0.5
+
+$$\begin{aligned}
+expit(0) = \frac{e^0}{(1+e^o)} = \frac{1}{(1+1)}=\frac{1}{2} = 0.5
+\end{aligned}$$
+
+1.9 Invert the expit function
+
+Use algebra to solve 𝑝 = expit(𝑡) for 𝑡 to find the inverse of the expit function, which we callthe logit function
+
+$$\begin{aligned}
+p=\frac{e^t}{1+e^t}\\
+p(1+e^t)=e^t\\
+p+p*e^t=e^t\\
+p=e^t-p*e^t\\
+p=e^t(1-p)\\
+e^t=\frac{p}{1-p}\\
+t=log(\frac{p}{1-p})
+\end{aligned}$$
+
+1.10 Interpret the logit function
+
+Complete this sentence:“For an outcome that occurs with probability 𝑝, logit(𝑝) is the log of the odds of that outcome occurring.”
+
+1.11 Implement the logit function
+
+```{r}
+logit = function(p) log(odds_func(p))
+```
+
+1.12 Graph the logit function
+
+```{r}
+logit_plot = 
+  ggplot() + 
+  geom_function(fun = logit) + 
+  xlim(.01, .99) + 
+  ylab("logit(p)") +
+  xlab("p") +
+  theme_bw()
+print(logit_plot)
+```
+
+1.13 Use the logit function
+
+If the probability of an event is 0.95, what is the log-odds of that event?
+
+```{r}
+p <- 0.95
+log_odds_val <- logit(p)
+print(log_odds_val)
+```
+
+1.14 Use the logit function again
+
+What value of 𝑡 produces expit(𝑡) = .05?
+
+```{r}
+p <- 0.05
+log_odds_val2 <- logit(p)
+print(log_odds_val2)
+```
+
+2\. Odds ratios
+
+2.1
+
+If $\beta_1$ = $\beta_2$, we can say that $\omicron_1$ = $\omicron_2$, therefore $\theta$ is 1.
+
+2.2
+
+If $\beta_1$ = 0, then $\pi(x)$ = expit {$\beta_0+\beta_1*x$} = expit {$\beta_0$}.
+
+$\pi(a)$ = expit {$\beta_0$}, $\pi(b)$ = expit {$\beta_0$}, therefore $\pi(a)$=$\pi(b)$.
+
+So for any a, b, the odds ratio is going to be 1.
+
+3 WCGS study
+
+```{r}
+load("wcgs.rda")
+```
+
+3.2 Table 1
+
+Produce a summary table summarizing and testing the univariate relationships between the outcome variable (chd69) and each covariate.
+
+```{r}
+library(arsenal)
+library(dplyr)
+wcgs |>
+  select(-c(id, uni, t1)) |>
+  tableby(chd69 ~ ., data = _) |>
+  summary(
+    pfootnote = TRUE,
+    title =
+      "Baseline characteristics by CHD status at end of follow-up")
+
+```
+
+```{r}
+model_age <- glm(chd69 ~ age, data = wcgs, family = binomial)
+summary(model_age)
+
+model_arcus <- glm(chd69 ~ arcus, data = wcgs, family = binomial)
+summary(model_arcus)
+
+model_behpat <- glm(chd69 ~ behpat, data = wcgs, family = binomial)
+summary(model_behpat)
+
+model_bmi <- glm(chd69 ~ bmi, data = wcgs, family = binomial)
+summary(model_bmi)
+
+model_chol <- glm(chd69 ~ chol, data = wcgs, family = binomial)
+summary(model_chol)
+
+model_dbp <- glm(chd69 ~ dbp, data = wcgs, family = binomial)
+summary(model_dbp)
+
+model_dibpat <- glm(chd69 ~ dibpat, data = wcgs, family = binomial)
+summary(model_dibpat)
+
+model_height <- glm(chd69 ~ height, data = wcgs, family = binomial)
+summary(model_height)
+
+model_lnsbp <- glm(chd69 ~ lnsbp, data = wcgs, family = binomial)
+summary(model_lnsbp)
+
+model_lnwght <- glm(chd69 ~ lnwght, data = wcgs, family = binomial)
+summary(model_lnwght)
+
+model_ncigs <- glm(chd69 ~ ncigs, data = wcgs, family = binomial)
+summary(model_ncigs)
+
+model_sbp <- glm(chd69 ~ sbp, data = wcgs, family = binomial)
+summary(model_sbp)
+
+model_smoke <- glm(chd69 ~ smoke, data = wcgs, family = binomial)
+summary(model_smoke)
+
+model_weight <- glm(chd69 ~ weight, data = wcgs, family = binomial)
+summary(model_weight)
+
+model_wghtcat <- glm(chd69 ~ wghtcat, data = wcgs, family = binomial)
+summary(model_wghtcat)
+
+model_agec <- glm(chd69 ~ agec, data = wcgs, family = binomial)
+summary(model_agec)
+```
+
+```{r}
+chd_model1 = glm(
+"formula" = chd69 == "Yes" ~ dibpat*age,
+"data" = wcgs,
+"family" = binomial(link = "logit")
+)
+library(parameters)
+chd_model1 |> parameters() |> print_md()
+```
+
+```{r}
+vcov(chd_model1) |> pander::pander()
+```
+
+3.3 Write down the mathematical structure of the model
+
+$$\begin{aligned}
+logit(E(y|x)) =X'\beta = \beta_0 + \beta_{age}X_{age}+\beta_{typeB}X_{typeb}+\beta_{age*typeb}(X_{age}*X_{typeB})\\
+=-5.49886 + 0.07191*X_{age}-0.30439*X_{typeb}-0.01034(X_{age}*X_{typeB})\\
+\end{aligned}$$
+
+3.4 From the model outputs above, compute by hand the estimated probability of CHD for a 45-year old with a Type A personality.
+
+$$\begin{aligned}
+logit(E(y =1|X_{age}=45, X_{typeB}=TypeA)) =X'\beta=-5.49886 + 
+0.07191*45-0.30439*0-0.01034(0)=-2.26291\\
+log(odds(\pi))=-2.26291\\
+odds(\pi)=e^{2.26291}\\
+odds(\pi)=0.104047\\
+\pi=\frac{\omega}{1+\omega}=\frac{0.104047}{1+0.104047}=0.09424
+\end{aligned}$$
+
+
+3.5 Confirm your results using the predict() function using the new data argument.
+
+```{r}
+library(tidyverse)
+newdata <- data.frame(age = 45, dibpat = "Type A")
+probabilities <- predict(chd_model1, newdata = newdata, type = "response")
+print(probabilities)
+```
+
+3.6 Compute the standard error of the log-odds of CHD for a 45-year-old with Type A personality.
+
+```{r}
+SE_logodds <- predict(chd_model1, newdata = newdata, se.fit=T)
+print(SE_logodds)
+```
+
+3.7 Compute a confidence interval for the estimated probability of CHD for a 45-year-old with Type A personality
+
+```{r}
+SE_prob <- predict(chd_model1, newdata = newdata, type = "response", se.fit=T)
+print(SE_prob)
+```
+
+```{r}
+conf_int_prob <-c(probabilities - qnorm(0.975)*0.008044576, probabilities + qnorm(0.975)*0.008044576)
+print(conf_int_prob)
+```
+
+3.8 Compute the probability of CHD for a 45-year-old with a Type B personality,either by hand or using predict().
+
+```{r}
+newdataB <- data.frame(age = 45, dibpat = "Type B")
+probabilityB <- predict(chd_model1, newdata = newdataB, type = "response")
+print(probabilityB)
+```
+
+3.9 Compute the risk difference, risk ratio, and odds ratio comparing the two individuals described in the previous sections.
+
+$$\begin{aligned}
+Risk~difference = Pr(Y=1|, X_{age} = 45,~X_{TypeB} = 0) - Pr(Y=1|, X_{age} = 45,~X_{TypeB} = 1)\\
+=0.09423056-0.04596144=0.04826912
+\end{aligned}$$
+
+$$\begin{aligned}
+Risk~ratio = Pr(Y=1|, X_{age} = 45,~X_{TypeB} = 0) / Pr(Y=1|, X_{age} = 45,~X_{TypeB} = 1)\\
+=0.09423056/0.04596144=2.050209
+\end{aligned}$$
+
+$$\begin{aligned}
+Odds(Y=1|, X_{age} = 45,~X_{TypeB} = 0) = \frac{0.09423056}{1-0.09423056} =0.1040337 \\
+Odds(Y=1|, X_{age} = 45,~X_{TypeB} = 1) = \frac{0.04596144}{1-0.04596144} =0.04817566 \\
+odds~ratio = \frac{odds(Y=1|, X_{age} = 45,~X_{TypeB} = 0)}{odds(Y=1|, X_{age} = 45,~X_{TypeB} = 1)}\\
+=0.1040337/0.04817566=2.159466
+\end{aligned}$$
+
+3.10 Recompute the odds ratio from the previous section; this time, write downthe odds for each individual in terms of the 𝛽s, and then construct the ratio of these expressions and cancel terms to simplify the expression as much aspossible.
+
+$$\begin{aligned}
+odds(Y=1|, X_{age} = 45,~X_{TypeB} = 0) =e^{\beta_0+\beta_{age}*45+\beta_{TypeB}*0+\beta_{age*TypeB}*45*0}\\
+odds(Y=1|, X_{age} = 45,~X_{TypeB} = 1) =e^{\beta_0+\beta_{age}*45+\beta_{TypeB}*1+\beta_{age*TypeB}*45*1}\\
+odds~ratio:\frac{e^{\beta_0+\beta_{age}*45+\beta_{TypeB}*0+\beta_{age*TypeB}*45*0}}{e^{\beta_0+\beta_{age}*45+\beta_{TypeB}*1+\beta_{age*TypeB}*45*1}}\\
+=e^{-(\beta_{TypeB}+\beta_{age*TypeB}*45)}
+\end{aligned}$$
+
+3.11 Plug in the numerical estimates of the remaining 𝛽 or 𝛽s into the expression from the previous section. Does the result match the answer yougot from brute-force calculation two subsections ago?
+
+$$
+e^{(0.30439+0.01034*45)}= 2.159097
+$$
+
+Yes.
+
+3.12 Using the approach from the subsection before last, determine the general formula for odds ratios comparing individuals with different ages who both have Type A personalities.
+
+$$\begin{aligned}
+odds(Y=1| X_{age} = a,~X_{TypeB} = 0) =e^{\beta_0+\beta_{age}*a+\beta_{TypeB}*0+\beta_{age*TypeB}*a*0}\\
+odds(Y=1| X_{age} = b,~X_{TypeB} = 0) =e^{\beta_0+\beta_{age}*b+\beta_{TypeB}*0+\beta_{age*TypeB}*b*0}\\
+odds~ratio:\frac{e^{\beta_0+\beta_{age}*a+\beta_{TypeB}*0+\beta_{age*TypeB}*a*0}}{e^{\beta_0+\beta_{age}*b+\beta_{TypeB}*0+\beta_{age*TypeB}*b*0}}\\
+=\frac{e^{\beta_0+\beta_{age}*a}}{e^{\beta_0+\beta_{age}*b}}\\
+=e^{\beta_{age}*(a-b)}\\
+=e^{0.07191(a-b)}
+\end{aligned}$$
+
+3.13 Compute the odds ratio comparing a Type A 45-year-old with a Type A 47.25-year-old, using the shortcut from the previous section.
+
+$$
+e^{\beta_{age}*(a-b)} = e^{0.07191*(45-47.25)}=0.8506134
+$$
+
+3.14 Compute a confidence interval for that odds ratio.
+
+```{r}
+log_odds_ratio <- log(0.8506134)
+print(log_odds_ratio)
+
+vcov(chd_model1)
+
+SE_log_odds_ratio <-sqrt(0.0001884791*(-2.25)^2)
+print(SE_log_odds_ratio)
+
+conf_int_log_odds_ratio <-log_odds_ratio + c(-1, 1)*qnorm(0.975)*SE_log_odds_ratio
+print(conf_int_log_odds_ratio)
+
+conf_int_odds_ratio <- exp(conf_int_log_odds_ratio)
+print(conf_int_odds_ratio)
+```
+
+3.15 Find the formula for the odds ratio comparing individuals of different ages who both have Type B personalities.
+
+$$\begin{aligned}
+odds(Y=1|, X_{age} = a,~X_{TypeB} = 1) =e^{\beta_0+\beta_{age}*a+\beta_{TypeB}*1
++\beta_{age*TypeB}*a*1}\\
+odds(Y=1|, X_{age} = b,~X_{TypeB} = 1) =e^{\beta_0+\beta_{age}*b+\beta_{TypeB}*1
++\beta_{age*TypeB}*b*1}\\
+odds~ratio:\frac{e^{\beta_0+\beta_{age}*a+\beta_{TypeB}*1+\beta_{age*TypeB}*a*1}}
+{e^{\beta_0+\beta_{age}*b+\beta_{TypeB}*1+\beta_{age*TypeB}*b*1}}\\
+=\frac{e^{\beta_{age}*a+\beta_{age*TypeB}*a}}{e^{\beta_{age}*b+
+\beta_{age*TypeB}*b}}\\
+=e^{\beta_{age}*(a-b)+\beta_{age*TypeB}*(a-b)}\\
+=e^{(a-b)*(\beta_{age}+\beta_{age*TypeB})}\\
+=e^{(a-b)(0.07191-0.01034)}\\
+=e^{(a-b)*0.06157}\\
+\end{aligned}$$
+
+3.16 Compute the odds ratio comparing a Type A 47.25 year old with a Type B 47.25 year old.
+
+$$\begin{aligned}
+odds(Y=1|, X_{age} = 47.25,~X_{TypeB} = 0) = e^{\beta_0+\beta_{age}*47.25+\beta_{TypeB}*0+\beta_{age*TypeB}*47.25*0}\\
+odds(Y=1|, X_{age} = 47.25,~X_{TypeB} = 1) = e^{\beta_0+\beta_{age}*47.25+\beta_{TypeB}*1+\beta_{age*TypeB}*47.25*1}\\
+odds~ratio:\frac{e^{\beta_0+\beta_{age}*47.25+\beta_{TypeB}*0+\beta_{age*TypeB}*47.25*0}}{e^{\beta_0+\beta_{age}*47.25+\beta_{TypeB}*1+\beta_{age*TypeB}*47.25*1}}\\
+=\frac{e^{\beta_0+\beta_{age}*47.25}}{e^{\beta_0+\beta_{age}*47.25+\beta_{TypeB}+\beta_{age*TypeB}*47.25}}\\
+=e^{-\beta_{TypeB}-\beta_{age*TypeB}*47.25}\\
+=e^{0.30439+0.01034*47.25}\\
+=2.209917
+\end{aligned}$$
+
+3.17 Compute the odds ratio comparing a Type A 45 year old with a Type B 47.25 year old, by first computing the odds for each individual and then taking the ratio of those odds.
+
+```{r}
+newdataC <- data.frame(age = 47.25, dibpat = "Type B")
+probabilityC <- predict(chd_model1, newdata = newdataC, type = "response")
+print(probabilityC)
+```
+
+$$\begin{aligned}
+Odds(Y=1| X_{age} = 45,~X_{TypeB} = 0) = \frac{0.09423056}{1-0.09423056} =0.1040337 \\
+Odds(Y=1| X_{age} = 47.25,~X_{TypeB} = 1) = \frac{0.05243189}{1-0.05243189} = 0.05533311\\
+odds~ratio = \frac{odds(Y=1| X_{age} = 45,~X_{TypeB} = 0)}{odds(Y=1| X_{age} = 47.25,~X_{TypeB} = 1)}\\
+=0.1040337/0.05533311=1.880135
+\end{aligned}$$
+
+3.18 Recompute the odds ratio from the previous subsection by multiplying the odds ratio for Type A 45-y.o. vs Type A 47.25-y.o. (from a few subsections ago) times the odds ratio for Type A 47.25 year old vs Type B 47.25 year old.
+
+$$
+0.8506134 * 2.209917 = 1.879785
+$$
+
+3.19 Compute the odds ratio comparing 49.15-year-old Type B versus 42.22-year-old type A, using the same shortcuts you used above.
+
+$$\begin{aligned}
+odds~ratio = \frac{odds(Y=1|, X_{age} = 49.15,~X_{TypeB} = 1)}{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 0)}\\
+=\frac{odds(Y=1|, X_{age} = 49.15,~X_{TypeB} = 1)}{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 1)}*\frac{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 1)}{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 0)}\\
+\frac{odds(Y=1|, X_{age} = 49.15,~X_{TypeB} = 1)}{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 1)}=e^{(49.15-42.22)*0.06157}=e^{0.4266801}=1.532162\\
+\frac{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 1)}{odds(Y=1|, X_{age} = 42.22,~X_{TypeB} = 0)}=\frac{e^{\beta_0+\beta_{age}*42.22+\beta_{TypeB}*1+\beta_{age*TypeB}*42.22*1}}{e^{\beta_0+\beta_{age}*42.22+\beta_{TypeB}*0+\beta_{age*TypeB}*42.22*0}}\\
+=\frac{e^{\beta_0+\beta_{age}*42.22+\beta_{TypeB}+\beta_{age*TypeB}*42.22}}{e^{\beta_0+\beta_{age}*42.22}}\\
+=e^{\beta_{TypeB}+\beta_{age*TypeB}*42.22}=e^{-0.30439-0.01034*42.22}=0.4766634\\
+odds~ratio=1.532162*0.4766634=0.7303255
+\end{aligned}$$
+
+3.20 Compute a confidence interval for the odds ratio comparing 49.15-year-old Type B versus 42.22-year-old type A. (extra credit)
+
+```{r}
+log_odds_ratio20 <- log(0.7303255)
+
+SE_log_odds_ratio20 <-sqrt(1.403571131+42.22^2*(0.0006054832)+2*42.22*(-0.0289432354))
+print(SE_log_odds_ratio20)
+
+conf_int_log_odds_ratio20 <-log_odds_ratio20 + c(-1, 1)*qnorm(0.975)*SE_log_odds_ratio20
+print(conf_int_log_odds_ratio20)
+
+conf_int_odds_ratio20 <- exp(conf_int_log_odds_ratio20)
+print(conf_int_odds_ratio20)
+```

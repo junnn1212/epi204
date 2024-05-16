@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>204_hw1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="204_hw1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="204_hw1_files/libs/quarto-html/quarto.js"></script>
+<script src="204_hw1_files/libs/quarto-html/popper.min.js"></script>
+<script src="204_hw1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="204_hw1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="204_hw1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="204_hw1_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="204_hw1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="204_hw1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="204_hw1_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">204_hw1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="points" class="level2">
+<h2 class="anchored" data-anchor-id="points"><em>1.1 (2 points)</em></h2>
+<p><em>Simulate one hundred mutually independent Bernoulli outcomes with probability 𝜋 = 0.7.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Set the probability of success (pi)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>pi <span class="ot">&lt;-</span> <span class="fl">0.7</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 100 Bernoulli outcomes</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>outcomes <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">100</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> pi)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the outcomes</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>n <span class="ot">=</span> <span class="fu">length</span>(outcomes)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(outcomes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 1 1 1 0 1 0 0 1 1 1 1 1 1 1 0 1 0 0 1 0 0 1 1 1 1 1 1 1 0 1 1 1 1 1 0 1 0
+ [38] 1 0 1 0 1 0 1 1 0 1 1 0 1 1 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 0 1 0 1 1
+ [75] 1 0 0 1 0 0 1 0 1 1 0 1 0 1 1 1 1 1 1 0 0 0 1 1 0 1</code></pre>
+</div>
+</div>
+<section id="points-1" class="level3">
+<h3 class="anchored" data-anchor-id="points-1"><em>1.2 (2 points)</em></h3>
+<p><em>Write down the mathematical likelihood of your data as a function of 𝜋.</em></p>
+<p><span class="math display">\[
+L(\pi; \tilde{x}) = \prod_{i = 1}^n \pi^{x_i} (1-\pi)^{1-x_i}
+\]</span></p>
+</section>
+</section>
+<section id="points-2" class="level2">
+<h2 class="anchored" data-anchor-id="points-2"><em>1.3 (2 points)</em></h2>
+<p><em>Implement the log-likelihood function 𝑙(𝜋; 𝑥)̃ and graph it as a function of 𝜋 (plugging in your observed data)</em></p>
+<section id="likelihood-graph" class="level3">
+<h3 class="anchored" data-anchor-id="likelihood-graph">likelihood graph:</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lik <span class="ot">=</span> <span class="cf">function</span>(pi, <span class="at">x =</span> outcomes) {pi<span class="sc">^</span><span class="fu">sum</span>(x) <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>pi)<span class="sc">^</span><span class="fu">sum</span>(<span class="dv">1</span><span class="sc">-</span>x)}</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_function</span>(<span class="at">fun =</span> lik, <span class="at">n =</span> <span class="dv">1000</span>) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">min</span>(outcomes), <span class="fu">max</span>(outcomes)) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"likelihood"</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'pi'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="log-likelihood-function" class="level3">
+<h3 class="anchored" data-anchor-id="log-likelihood-function">Log-likelihood function:</h3>
+<p><span class="math display">\[
+\ell(\pi; \tilde{x}) = lnL(\pi; \tilde{x}) = ln(\prod_{i = 1}^n \pi^{x_i} (1-\pi)^{1-x_i})\\
+=ln (\pi^{\sum_{i=1}^n x_i} (1-\pi)^{\sum_{i=1}^n (1-x_i)}\\
+=\sum_{i=1}^n x_i*ln(\pi) + \sum_{i=1}^n (1-x_i) * ln (1-\pi)
+\]</span></p>
+</section>
+<section id="log-likelihood-graph" class="level3">
+<h3 class="anchored" data-anchor-id="log-likelihood-graph">Log-likelihood Graph:</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>loglik <span class="ot">=</span> <span class="cf">function</span>(pi, <span class="at">x =</span> outcomes)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(x)<span class="sc">*</span><span class="fu">log</span>(pi) <span class="sc">+</span> <span class="fu">sum</span>(<span class="dv">1</span><span class="sc">-</span>x)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span><span class="sc">-</span>pi)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>ll_plot <span class="ot">=</span> <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_function</span>(<span class="at">fun =</span> loglik, <span class="at">n =</span> <span class="dv">1000</span>) <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">min</span>(outcomes), <span class="fu">max</span>(outcomes)) <span class="sc">+</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"log-likelihood"</span>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">'pi'</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>ll_plot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><em>1.4 (2 points)</em></p>
+<p><em>Find the maximum likelihood estimate of 𝜋 using calculus.</em></p>
+<p><span class="math display">\[
+\ell(\pi; \tilde{x}) = \sum_{i=1}^n x_i*ln(\pi) + \sum_{i=1}^n (1-x_i) * ln (1-\pi)\\
+\frac{\partial}{\partial\pi} \sum_{i=1}^n x_iln(\pi) + \sum_{i=1}^n (1-x_i)  ln (1-\pi)\\
+\frac{\sum_{i=1}^n x_i}{\pi} - \frac{\sum_{i=1}^n1-x}{1-\pi}\\
+then\\
+\frac{\sum_{i=1}^n x_i}{\pi} - \frac{\sum_{i=1}^n1-x}{1-\pi} = 0\\
+{(1-\pi) \sum_{i=1}^n x_i - \pi \sum_{i=1}^n (1-x_i)} = 0\\
+\sum_{i=1}^n x_i - \pi \sum_{i=1}^n x_i - n\pi + \pi \sum_{i=1}^n x_i = 0\\
+\hat{\pi}_{ML} = \frac{\sum_{i=1}^n x_i}{n}
+\]</span></p>
+<p>Second derivative:</p>
+<p><span class="math display">\[
+\frac{\partial}{\partial^2\pi} \frac{\sum_{i=1}^n x_i}{\pi} - \frac{\sum_{i=1}^n1-x}{1-\pi}\\
+=-(\pi)^{-2}\sum_{i=1}^n x_i  - (1-\pi)^{-2}{\sum_{i=1}^n 1-x_i}\\
+=-\frac{\sum_{i=1}^n x_i}{\pi^2} - \frac{\sum_{i=1}^n 1-x_i}{(1-\pi)^2}
+\]</span></p>
+<p>The value of the second derivative is negative.</p>
+<p><em>1.5 (2 points)</em></p>
+<p><em>Compute the maximum likelihood estimate of 𝜋 from your simulated data</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>est_pi <span class="ot">=</span> <span class="fu">sum</span>(outcomes)<span class="sc">/</span>n</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(est_pi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.68</code></pre>
+</div>
+</div>
+<p><em>1.6 (2 points)</em></p>
+<p><em>Find the asymptotic standard error of the maximum likelihood estimator 𝜋𝑀̂ 𝐿 using calculus.</em></p>
+<p>Find the Cramer-Rao Lower Bound (variance):</p>
+<p><span class="math display">\[
+CRLB = \frac{1}{nI(\pi)}\\
+f(x;\pi) = \pi^x (1-\pi)^{1-x}\\
+lnf(x;\pi) = xln\pi + (1-x)ln(1-\pi)\\
+\frac{\partial}{\partial\pi}lnf(x;\pi)=\frac{x}{\pi}-\frac{1-x}{1-\pi}\\
+\frac{\partial^2}{\partial\pi^2}lnf(x;\pi)=-\frac{x}{\pi^2}-\frac{1-x}{(1-\pi)^2}\\
+\]</span> <span class="math display">\[
+I(\pi) = -E [\frac{\partial^2}{\partial\pi^2}lnf(x;\pi)]\\
+= -E [-\frac{x}{\pi^2}-\frac{1-x}{(1-\pi)^2}] = \frac{E(x)}{E(\pi^2)}+\frac{E(1-x)}{E(1-\pi)^2}\\
+=\frac{E(x)}{\pi^2}+\frac{1-E(x)}{(1-\pi)^2} = \frac{\pi}{\pi^2}+\frac{1-\pi}{(1-\pi)^2}\\
+= \frac{1}{\pi}+\frac{1}{(1-\pi)}
+\]</span></p>
+<p><span class="math display">\[
+CRLB = \frac{1}{n[\frac{1}{\pi}+\frac{1}{(1-\pi)}]}=\frac{1}{\frac{n}{\pi}+\frac{n}{(1-\pi)}}\\
+=\frac{1}{\frac{n}{\pi}+\frac{n}{(1-\pi)}}=\frac{1}{\frac{n(1-\pi)}{\pi(1-\pi)}+\frac{\pi*n}{\pi(1-\pi)}}\\
+= \frac{1}{\frac{(n-\pi*n)+\pi*n}{\pi(1-\pi)}} = \frac{1}{\frac{n}{\pi(1-\pi)}} = \frac{\pi(1-\pi)}{n}
+\]</span></p>
+<p>Find the asymptotic standard error:</p>
+<p><span class="math display">\[
+\widehat{SE}(\pi_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}} = \sqrt{\frac{0.68(1-0.68)}{100}} = 0.0466
+\]</span></p>
+<p><em>1.7 (2 points)</em></p>
+<p><em>Plot the asymptotic standard error as a function of sample size for sample sizes of 10 - 10,000 (using logarithmic spacing for sample size).</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>std_er <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">pi=</span><span class="fl">0.68</span>) {<span class="fu">sqrt</span>(pi<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pi)<span class="sc">/</span>n)}</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_function</span>(<span class="at">fun=</span>std_er) <span class="sc">+</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans=</span><span class="st">"log10"</span>, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">10</span>,<span class="dv">10</span><span class="sc">^</span><span class="dv">4</span>)) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Standard Error of MLE"</span>)<span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">xlab</span>(<span class="st">"Sample Size n"</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Asymptotic SE"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><em>1.8 (2 points)</em></p>
+<p><em>Find an expression for the sample size necessary to achieve a specified standard error (for a given 𝜋).</em></p>
+<p><span class="math display">\[
+\widehat{SE}(\hat{\pi}_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}}\\
+Var(\hat{\pi}_{ML}) = \frac{\pi(1-\pi)}{n}\\
+n = \frac{\pi(1-\pi)}{Var(\hat{\pi}_{ML})}
+\]</span></p>
+<p><em>Invert the function you derived previously for standard error. In other words, solve the equation SE(𝜋̂) = 𝑓(𝜋, 𝑛) for 𝑛.</em></p>
+<p><em>1.9 (2 points)</em></p>
+<p><em>Implement your sample size function in R and graph it for standard errors of 10 percentage points to 0.1 percentage points.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sample_size <span class="ot">&lt;-</span> <span class="cf">function</span>(se_ml,<span class="at">pi=</span><span class="fl">0.68</span>) {(pi<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pi)<span class="sc">/</span>se_ml<span class="sc">^</span><span class="dv">2</span>)}</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_function</span>(<span class="at">fun=</span>sample_size) <span class="sc">+</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">001</span>,<span class="fl">0.1</span>)) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">"Sample Size n"</span>)<span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">xlab</span>(<span class="st">"Standard Error"</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Sample Size Needed for Specific SE"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><em>1.10 (2 points)</em></p>
+<p><em>• What sample size do you need to achieve a standard error of 1 percentage point?</em></p>
+<p><span class="math display">\[
+n = \frac{\pi(1-\pi)}{Var(\hat{\pi}_{ML})} = \frac{0.68(1-0.68)}{0.1^2} = 21.76 \approx 22
+\]</span></p>
+<p><em>• What sample size do you need to achieve a standard error of 0.1 percentage point?</em> (<em>Use your answer to the previous subsection.)</em> <span class="math display">\[
+n = \frac{\pi(1-\pi)}{Var(\hat{\pi}_{ML})} = \frac{0.68(1-0.68)}{0.001^2} = 217600
+\]</span></p>
+<p><em>1.11 (2 points)</em></p>
+<p><em>Estimate the standard error from your simulated data using the asymptotic formula.</em></p>
+<p><em>Compare with the theoretical standard error.</em></p>
+<p>Asymptotic:</p>
+<p><span class="math display">\[
+\widehat{SE}(\pi_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}} = \sqrt{\frac{0.68(1-0.68)}{100}} = 0.0466
+\]</span></p>
+<p>Theoretical standard error:</p>
+<p><span class="math display">\[
+\widehat{SE}(\pi_{ML}) = \sqrt{\frac{\pi(1-\pi)}{n}} = \sqrt{\frac{0.7(1-0.7)}{100}} = 0.0458
+\]</span></p>
+<p><em>1.12 (2 points)</em></p>
+<p><em>Compute an asymptotic 95% confidence interval for 𝜋.</em><span class="math display">\[
+(\hat{\pi} - 1.96* \widehat{SE}(\pi_{ML}) , \hat{\pi} + 1.96* \widehat{SE}(\pi_{ML}))\\
+(0.68-1.96*0.0466, 0.68+1.96*0.0466) = (0.589, 0.771)
+\]</span></p>
+<p><em>1.13 (2 points)</em></p>
+<p><em>Calculate an asymptotic p-value for the null hypothesis 𝐻0 ∶ 𝜋 = 0.5.</em></p>
+<p><span class="math inline">\(H_0:\pi = 0.5\)</span></p>
+<p><span class="math inline">\(H_1:\pi = 0.68\)</span></p>
+<p><span class="math display">\[
+Z = \frac{0.68 - 0.5}{0.0466} = 3.863
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(<span class="fl">3.8626</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0001121866</code></pre>
+</div>
+</div>
+<p><em>1.14 (2 points)</em></p>
+<p><em>Interpret both results in scientific terms.</em></p>
+<p>95% CI: we are 95% confident that the true value of <span class="math inline">\(\pi\)</span> lies between 0.589 and 0.711.</p>
+<p>P-value: there is a 0.00011 chance that the true value of <span class="math inline">\(\pi\)</span> is 0.5 (which is the null hypothesis) based on the evidence we have. The chance is very small; it is smaller than 5%. Therefore, we have the evidence to reject the null hypothesis at a 5% significance level.</p>
+<p><em>1.15 (2 points)</em></p>
+<p><em>Find the set of binomial outcomes (values of</em> <span class="math inline">\(\sum_{i=1}^n X_i\)</span><em>) for which you would reject the null hypothesis.</em></p>
+<p><span class="math display">\[
+P(Z = \frac{\hat{\pi} - 0.5}{\sqrt(\frac{0.5(1-0.5)}{100})}) &gt; 0.05\\
+Z = \frac{\hat{\pi} - 0.5}{0.05} &gt; 1.96\\
+\hat{\pi}&gt;1.96*0.05+0.5\\
+\hat{\pi}&gt;0.598\\
+\sum_{i=1}^nX_i= n*\hat{\pi} &gt; 100*0.598 = 59.8 \approx 60
+\]</span></p>
+<p>Or:</p>
+<p><span class="math display">\[
+Z = \frac{\hat{\pi} - 0.5}{0.05} &lt; -1.96\\
+\hat{\pi}&lt;-1.96*0.05+0.5\\
+\hat{\pi}&lt;0.402\\
+\sum_{i=1}^nX_i= n*\hat{\pi} &lt; 100*0.402 = 40.2 \approx 40
+\]</span></p>
+<p>If <span class="math inline">\(\sum_{i=1}^n X_i\)</span> <span class="math inline">\(\geq\)</span> 60 or <span class="math inline">\(\leq\)</span> 40, then we will reject the null hypothesis.</p>
+<p><em>1.16 (2 points):</em></p>
+<p><em>Compute the probability of rejecting the null hypothesis (power), if the data-generating value of 𝜋 equals your estimate. In other words, assume that 𝜋 = 𝜋̂ and use the binomial distribution of</em> <span class="math inline">\(\sum_{i=1}^n X_i\)</span> <em>to evaluate the power of the normal-approximation test of 𝐻0 ∶ 𝜋 = 0.5.</em></p>
+<p><span class="math display">\[
+H_1:\pi = 68\\
+H_0: \pi = 50\\
+\sum_{i=1}^n X_i \sim (E(X), Var(X))\\
+E(X) = n*\pi = 100*0.68 = 68\\
+Var(X) = n*\pi(1-\pi) = 100*0.68*(1-0.68) = 21.76\\
+\sum_{i=1}^n X_i \sim (68, 21.76)
+\]</span></p>
+<p>The probability of rejecting <span class="math inline">\(H_0\)</span> is:</p>
+<p>$$ K() = P( ,)\ =P(; )\ =1-(), 50,\</p>
+<p>K(68) =1-(), 50,\ =1-(-1.715)= 0.957 $$</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">1.715</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9568274</code></pre>
+</div>
+</div>
+<p><em>1.17 (2 points):</em></p>
+<p><em>Graph the power to reject the null hypothesis as a function of sample size, using your sample estimate as the data-generating value. What sample size would you need to achieve 80% power? 90%? 95%? 99%?</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>power_function <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">null=</span><span class="fl">0.5</span>, <span class="at">alt=</span><span class="fl">0.68</span>){</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  n<span class="ot">=</span><span class="fu">floor</span>(n)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  se_null <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(null<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>null)<span class="sc">/</span>n)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  B <span class="ot">&lt;-</span> (n<span class="sc">*</span>(null <span class="sc">+</span> (<span class="fu">qnorm</span>(<span class="fl">0.975</span>)<span class="sc">*</span>se_null)))<span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ceiling</span>()</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  A <span class="ot">&lt;-</span> (n<span class="sc">*</span>(null <span class="sc">+</span> (<span class="fu">qnorm</span>(<span class="fl">0.025</span>)<span class="sc">*</span>se_null)))<span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">floor</span>()</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  power_A <span class="ot">&lt;-</span> <span class="fu">pbinom</span>(A, n, <span class="at">prob=</span>alt)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  power_B <span class="ot">&lt;-</span> <span class="fu">pbinom</span>(B<span class="dv">-1</span>, n, <span class="at">prob=</span>alt, <span class="at">lower=</span><span class="cn">FALSE</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  power_total <span class="ot">&lt;-</span> power_A <span class="sc">+</span> power_B</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  power_total</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>samples<span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_function</span>(<span class="at">fun =</span> power_function) <span class="sc">+</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">limits =</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1000</span>))<span class="sc">+</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Power"</span>) <span class="sc">+</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Sample size n"</span>) <span class="sc">+</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>powers <span class="ot">&lt;-</span> <span class="fu">power_function</span>(samples)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>powers <span class="sc">&gt;=</span> <span class="fl">0.8</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [25] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [37] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [49] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE
+  [61] FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+  [73]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+  [85]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+  [97]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [109]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [121]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [133]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [145]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [157]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [169]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [181]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [193]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [205]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [217]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [229]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [241]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [253]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [265]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [277]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [289]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [301]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [313]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [325]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [337]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [349]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [361]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [373]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [385]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [397]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [409]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [421]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [433]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [445]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [457]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [469]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [481]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [493]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [505]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [517]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [529]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [541]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [553]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [565]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [577]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [589]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [601]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [613]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [625]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [637]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [649]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [661]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [673]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [685]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [697]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [709]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [721]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [733]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [745]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [757]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [769]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [781]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [793]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [805]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [817]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [829]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [841]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [853]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [865]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [877]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [889]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [901]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [913]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [925]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [937]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [949]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [961]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [973]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [985]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [997]  TRUE  TRUE  TRUE  TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>samples[<span class="fu">min</span>(<span class="fu">which</span>(powers<span class="sc">&gt;=</span><span class="fl">0.8</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 55</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>samples[<span class="fu">min</span>(<span class="fu">which</span>(powers<span class="sc">&gt;=</span><span class="fl">0.9</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 75</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>samples[<span class="fu">min</span>(<span class="fu">which</span>(powers<span class="sc">&gt;=</span><span class="fl">0.95</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 93</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>samples[<span class="fu">min</span>(<span class="fu">which</span>(powers<span class="sc">&gt;=</span><span class="fl">0.99</span>))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 133</code></pre>
+</div>
+</div>
+<p>-80% power: n=55</p>
+<p>-90% power: n=75</p>
+<p>-95% power: n=93</p>
+<p>-99% power: n=133</p>
+<p><em>1.18 (2 points)</em></p>
+<p><em>Repeat the simulation 1000 times. Each time, record:</em></p>
+<p><em>• 𝜋̂ (the MLE of 𝜋)</em></p>
+<p><em>• 𝑆𝐸̂ (𝜋̂) (the estimated standard error of the MLE of 𝜋)</em></p>
+<p><em>• The p-value of the hypothesis test 𝐻0 ∶ 𝜋 = 0.5 vs 𝐻𝐴 ∶ 𝜋 ≠ 0.5</em></p>
+<p><em>• whether you rejected the null hypothesis at the 𝛼 = 0.05 level</em></p>
+<p><em>• whether the confidence interval included the true value 𝜋 = 0.7</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sim_func <span class="ot">&lt;-</span> <span class="cf">function</span>(n, nsims, pi, null, alpha){</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  errors <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  reject_null <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  CI_true_val <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nsims){</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(i)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    x.i <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n,<span class="dv">1</span>,<span class="fl">0.7</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    est <span class="ot">&lt;-</span> <span class="fu">mean</span>(x.i)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(est<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>est)<span class="sc">/</span>n)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    se_null <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(null<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>null)<span class="sc">/</span>n)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    ci_radius <span class="ot">&lt;-</span> se<span class="sc">*</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    ci <span class="ot">&lt;-</span> est<span class="sc">+</span><span class="fu">c</span>(<span class="sc">-</span>ci_radius,ci_radius)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    z_stat <span class="ot">&lt;-</span> <span class="fu">abs</span>(est<span class="sc">-</span>null<span class="sc">/</span>se_null)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    pval <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(z_stat, <span class="at">lower=</span><span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    estimates[i] <span class="ot">&lt;-</span> est</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    errors[i] <span class="ot">&lt;-</span> se</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>    reject_null[i] <span class="ot">&lt;-</span> pval<span class="sc">&lt;</span>alpha</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    CI_true_val[i] <span class="ot">&lt;-</span> (pi<span class="sc">&gt;</span>ci[<span class="dv">1</span>]<span class="sc">&amp;</span>pi<span class="sc">&lt;</span>ci[<span class="dv">2</span>])</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  true_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(pi<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pi)<span class="sc">/</span>n)</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  sim_results <span class="ot">&lt;-</span><span class="fu">tibble</span>(</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  estimates,</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  errors,</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>  reject_null,</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>  CI_true_val)</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">n=</span>n,</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">nsims=</span>nsims,</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi=</span>pi,</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">null=</span>null,</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha=</span>alpha,</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">sim_results=</span>sim_results,</span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimates=</span>estimates,</span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">errors=</span>errors,</span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">reject_null=</span>reject_null,</span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>    CI_true_val,</span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">true_se=</span>true_se,</span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_mean=</span><span class="fu">mean</span>(estimates),</span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_bias=</span><span class="fu">mean</span>(estimates)<span class="sc">-</span>pi,</span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_se=</span><span class="fu">sd</span>(estimates),</span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_var=</span><span class="fu">sd</span>(estimates)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_bias=</span><span class="fu">mean</span>(errors)<span class="sc">-</span>true_se,</span>
+<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_mean=</span><span class="fu">mean</span>(errors),</span>
+<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_se=</span><span class="fu">sd</span>(errors),</span>
+<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_var=</span><span class="fu">sd</span>(errors)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb24-54"><a href="#cb24-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_CI=</span><span class="fu">mean</span>(CI_true_val),</span>
+<span id="cb24-55"><a href="#cb24-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_reject=</span><span class="fu">mean</span>(reject_null)</span>
+<span id="cb24-56"><a href="#cb24-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-57"><a href="#cb24-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb24-58"><a href="#cb24-58" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-59"><a href="#cb24-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb24-60"><a href="#cb24-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb24-61"><a href="#cb24-61" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-62"><a href="#cb24-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-63"><a href="#cb24-63" aria-hidden="true" tabindex="-1"></a>sim_1000_results <span class="ot">&lt;-</span> <span class="fu">sim_func</span>(<span class="at">n=</span><span class="dv">100</span>, <span class="at">nsims=</span><span class="dv">1000</span>, <span class="at">pi=</span><span class="fl">0.7</span>, <span class="at">null=</span> <span class="fl">0.5</span>, <span class="at">alpha=</span><span class="fl">0.05</span>)</span>
+<span id="cb24-64"><a href="#cb24-64" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(sim_1000_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$n
+[1] 100
+
+$nsims
+[1] 1000
+
+$pi
+[1] 0.7
+
+$null
+[1] 0.5
+
+$alpha
+[1] 0.05
+
+$sim_results
+# A tibble: 1,000 × 4
+   estimates errors reject_null CI_true_val
+       &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+ 1      0.68 0.0466           1           1
+ 2      0.69 0.0462           1           1
+ 3      0.69 0.0462           1           1
+ 4      0.61 0.0488           1           1
+ 5      0.64 0.048            1           1
+ 6      0.65 0.0477           1           1
+ 7      0.69 0.0462           1           1
+ 8      0.73 0.0444           1           1
+ 9      0.71 0.0454           1           1
+10      0.79 0.0407           1           0
+# ℹ 990 more rows
+
+$estimates
+   [1] 0.68 0.69 0.69 0.61 0.64 0.65 0.69 0.73 0.71 0.79 0.83 0.72 0.75 0.71
+  [15] 0.57 0.66 0.68 0.71 0.63 0.72 0.64 0.72 0.63 0.77 0.76 0.64 0.74 0.74
+  [29] 0.77 0.78 0.79 0.64 0.70 0.67 0.66 0.67 0.70 0.68 0.73 0.70 0.63 0.66
+  [43] 0.75 0.78 0.73 0.73 0.75 0.69 0.69 0.77 0.69 0.64 0.76 0.66 0.59 0.71
+  [57] 0.67 0.79 0.76 0.71 0.68 0.67 0.70 0.62 0.68 0.79 0.77 0.72 0.71 0.70
+  [71] 0.75 0.60 0.60 0.69 0.76 0.65 0.65 0.70 0.68 0.72 0.74 0.72 0.65 0.62
+  [85] 0.66 0.63 0.72 0.66 0.63 0.69 0.80 0.77 0.68 0.69 0.79 0.73 0.76 0.75
+  [99] 0.74 0.72 0.64 0.72 0.74 0.69 0.72 0.70 0.68 0.77 0.67 0.72 0.75 0.66
+ [113] 0.69 0.74 0.76 0.70 0.68 0.65 0.70 0.69 0.71 0.70 0.71 0.75 0.65 0.72
+ [127] 0.72 0.67 0.74 0.67 0.68 0.67 0.59 0.71 0.71 0.72 0.67 0.68 0.73 0.62
+ [141] 0.72 0.71 0.64 0.75 0.61 0.69 0.72 0.68 0.68 0.68 0.67 0.80 0.68 0.62
+ [155] 0.74 0.69 0.66 0.71 0.74 0.63 0.69 0.79 0.61 0.68 0.73 0.62 0.81 0.69
+ [169] 0.71 0.68 0.74 0.69 0.62 0.63 0.77 0.65 0.65 0.64 0.65 0.69 0.70 0.68
+ [183] 0.65 0.67 0.58 0.74 0.72 0.73 0.69 0.61 0.81 0.73 0.68 0.67 0.68 0.70
+ [197] 0.69 0.75 0.70 0.82 0.82 0.75 0.70 0.63 0.69 0.70 0.74 0.65 0.74 0.73
+ [211] 0.63 0.68 0.67 0.68 0.73 0.55 0.72 0.70 0.69 0.71 0.74 0.67 0.71 0.77
+ [225] 0.62 0.71 0.75 0.70 0.75 0.78 0.80 0.69 0.70 0.72 0.65 0.66 0.71 0.59
+ [239] 0.70 0.66 0.81 0.74 0.66 0.73 0.72 0.76 0.68 0.69 0.69 0.72 0.69 0.70
+ [253] 0.73 0.73 0.66 0.69 0.62 0.66 0.69 0.71 0.78 0.68 0.79 0.76 0.74 0.73
+ [267] 0.61 0.64 0.74 0.64 0.72 0.68 0.75 0.69 0.70 0.74 0.77 0.75 0.67 0.74
+ [281] 0.65 0.69 0.65 0.75 0.68 0.62 0.75 0.68 0.72 0.56 0.61 0.73 0.59 0.73
+ [295] 0.73 0.61 0.75 0.64 0.68 0.65 0.78 0.72 0.65 0.73 0.68 0.69 0.70 0.71
+ [309] 0.71 0.76 0.61 0.71 0.66 0.80 0.68 0.70 0.65 0.73 0.71 0.70 0.71 0.64
+ [323] 0.67 0.68 0.73 0.67 0.72 0.60 0.67 0.72 0.66 0.71 0.74 0.64 0.77 0.59
+ [337] 0.73 0.72 0.65 0.67 0.74 0.65 0.68 0.73 0.69 0.65 0.69 0.73 0.71 0.74
+ [351] 0.65 0.73 0.66 0.65 0.72 0.60 0.74 0.73 0.68 0.64 0.69 0.64 0.64 0.68
+ [365] 0.68 0.70 0.73 0.77 0.68 0.75 0.67 0.73 0.75 0.68 0.69 0.71 0.64 0.62
+ [379] 0.79 0.75 0.67 0.73 0.72 0.74 0.69 0.76 0.60 0.67 0.73 0.69 0.76 0.68
+ [393] 0.75 0.67 0.70 0.74 0.80 0.69 0.69 0.74 0.71 0.68 0.72 0.67 0.71 0.64
+ [407] 0.71 0.71 0.60 0.63 0.70 0.66 0.68 0.71 0.72 0.80 0.73 0.81 0.67 0.70
+ [421] 0.66 0.72 0.75 0.73 0.68 0.71 0.66 0.65 0.71 0.69 0.76 0.66 0.72 0.70
+ [435] 0.69 0.74 0.68 0.68 0.66 0.69 0.63 0.66 0.77 0.77 0.75 0.75 0.72 0.68
+ [449] 0.78 0.83 0.65 0.71 0.63 0.71 0.58 0.66 0.70 0.68 0.65 0.69 0.73 0.67
+ [463] 0.66 0.69 0.73 0.73 0.64 0.74 0.71 0.76 0.72 0.67 0.72 0.73 0.73 0.64
+ [477] 0.67 0.69 0.64 0.70 0.70 0.70 0.77 0.67 0.74 0.70 0.70 0.69 0.81 0.72
+ [491] 0.71 0.76 0.66 0.74 0.74 0.65 0.66 0.72 0.73 0.68 0.67 0.72 0.70 0.67
+ [505] 0.71 0.62 0.63 0.64 0.76 0.73 0.76 0.72 0.77 0.75 0.68 0.61 0.68 0.71
+ [519] 0.60 0.81 0.63 0.64 0.71 0.66 0.70 0.62 0.75 0.70 0.78 0.74 0.75 0.58
+ [533] 0.70 0.67 0.68 0.76 0.74 0.70 0.67 0.70 0.72 0.70 0.71 0.70 0.62 0.72
+ [547] 0.73 0.59 0.81 0.62 0.66 0.70 0.61 0.66 0.72 0.73 0.74 0.73 0.67 0.68
+ [561] 0.74 0.67 0.78 0.65 0.71 0.78 0.72 0.71 0.73 0.74 0.71 0.73 0.67 0.73
+ [575] 0.73 0.66 0.71 0.78 0.69 0.72 0.68 0.73 0.65 0.68 0.71 0.76 0.72 0.65
+ [589] 0.68 0.70 0.66 0.72 0.72 0.63 0.66 0.75 0.71 0.64 0.69 0.70 0.78 0.77
+ [603] 0.68 0.74 0.73 0.70 0.66 0.72 0.75 0.68 0.79 0.72 0.63 0.74 0.68 0.69
+ [617] 0.65 0.68 0.74 0.69 0.70 0.73 0.70 0.65 0.66 0.66 0.69 0.71 0.76 0.65
+ [631] 0.65 0.66 0.74 0.68 0.72 0.69 0.67 0.64 0.58 0.58 0.71 0.72 0.61 0.69
+ [645] 0.68 0.65 0.64 0.73 0.75 0.73 0.64 0.67 0.65 0.70 0.70 0.64 0.68 0.67
+ [659] 0.73 0.66 0.66 0.76 0.68 0.64 0.73 0.64 0.65 0.71 0.78 0.67 0.74 0.69
+ [673] 0.79 0.70 0.76 0.73 0.69 0.70 0.69 0.60 0.67 0.65 0.67 0.76 0.66 0.69
+ [687] 0.69 0.71 0.68 0.70 0.72 0.70 0.68 0.71 0.71 0.58 0.72 0.76 0.67 0.72
+ [701] 0.66 0.68 0.73 0.68 0.66 0.67 0.70 0.72 0.70 0.71 0.70 0.72 0.69 0.65
+ [715] 0.64 0.69 0.73 0.71 0.60 0.67 0.70 0.68 0.69 0.73 0.65 0.73 0.65 0.74
+ [729] 0.73 0.72 0.68 0.60 0.69 0.76 0.67 0.68 0.73 0.73 0.71 0.70 0.77 0.68
+ [743] 0.67 0.75 0.74 0.73 0.70 0.67 0.66 0.74 0.71 0.73 0.74 0.65 0.68 0.76
+ [757] 0.70 0.63 0.70 0.72 0.75 0.76 0.73 0.74 0.72 0.73 0.70 0.62 0.74 0.66
+ [771] 0.74 0.70 0.74 0.64 0.70 0.71 0.69 0.72 0.69 0.63 0.71 0.74 0.74 0.71
+ [785] 0.71 0.68 0.71 0.63 0.73 0.71 0.74 0.69 0.69 0.76 0.78 0.76 0.74 0.73
+ [799] 0.73 0.71 0.73 0.72 0.69 0.69 0.76 0.70 0.67 0.75 0.78 0.78 0.68 0.67
+ [813] 0.65 0.70 0.71 0.77 0.64 0.74 0.61 0.71 0.63 0.68 0.73 0.60 0.76 0.67
+ [827] 0.66 0.75 0.63 0.59 0.69 0.73 0.62 0.68 0.69 0.68 0.65 0.75 0.73 0.67
+ [841] 0.74 0.65 0.67 0.69 0.70 0.63 0.70 0.71 0.68 0.75 0.72 0.73 0.80 0.66
+ [855] 0.74 0.73 0.66 0.76 0.71 0.69 0.77 0.66 0.65 0.67 0.64 0.68 0.74 0.64
+ [869] 0.72 0.74 0.75 0.71 0.81 0.63 0.71 0.78 0.73 0.64 0.77 0.70 0.74 0.70
+ [883] 0.73 0.67 0.70 0.70 0.69 0.71 0.64 0.63 0.63 0.61 0.72 0.76 0.75 0.67
+ [897] 0.74 0.69 0.73 0.76 0.68 0.58 0.68 0.77 0.68 0.68 0.69 0.72 0.74 0.81
+ [911] 0.69 0.64 0.62 0.67 0.74 0.70 0.69 0.74 0.62 0.67 0.71 0.74 0.79 0.73
+ [925] 0.78 0.67 0.74 0.65 0.80 0.79 0.65 0.69 0.73 0.78 0.68 0.75 0.75 0.68
+ [939] 0.72 0.71 0.77 0.73 0.61 0.74 0.71 0.64 0.66 0.66 0.70 0.72 0.71 0.70
+ [953] 0.71 0.64 0.64 0.73 0.72 0.60 0.62 0.74 0.71 0.74 0.72 0.75 0.71 0.74
+ [967] 0.73 0.73 0.77 0.64 0.70 0.72 0.81 0.72 0.71 0.71 0.58 0.75 0.74 0.64
+ [981] 0.73 0.70 0.69 0.67 0.75 0.67 0.68 0.69 0.80 0.68 0.70 0.64 0.64 0.71
+ [995] 0.62 0.74 0.69 0.70 0.73 0.72
+
+$errors
+   [1] 0.04664762 0.04624932 0.04624932 0.04877499 0.04800000 0.04769696
+   [7] 0.04624932 0.04439595 0.04537621 0.04073082 0.03756328 0.04489989
+  [13] 0.04330127 0.04537621 0.04950758 0.04737088 0.04664762 0.04537621
+  [19] 0.04828043 0.04489989 0.04800000 0.04489989 0.04828043 0.04208325
+  [25] 0.04270831 0.04800000 0.04386342 0.04386342 0.04208325 0.04142463
+  [31] 0.04073082 0.04800000 0.04582576 0.04702127 0.04737088 0.04702127
+  [37] 0.04582576 0.04664762 0.04439595 0.04582576 0.04828043 0.04737088
+  [43] 0.04330127 0.04142463 0.04439595 0.04439595 0.04330127 0.04624932
+  [49] 0.04624932 0.04208325 0.04624932 0.04800000 0.04270831 0.04737088
+  [55] 0.04918333 0.04537621 0.04702127 0.04073082 0.04270831 0.04537621
+  [61] 0.04664762 0.04702127 0.04582576 0.04853864 0.04664762 0.04073082
+  [67] 0.04208325 0.04489989 0.04537621 0.04582576 0.04330127 0.04898979
+  [73] 0.04898979 0.04624932 0.04270831 0.04769696 0.04769696 0.04582576
+  [79] 0.04664762 0.04489989 0.04386342 0.04489989 0.04769696 0.04853864
+  [85] 0.04737088 0.04828043 0.04489989 0.04737088 0.04828043 0.04624932
+  [91] 0.04000000 0.04208325 0.04664762 0.04624932 0.04073082 0.04439595
+  [97] 0.04270831 0.04330127 0.04386342 0.04489989 0.04800000 0.04489989
+ [103] 0.04386342 0.04624932 0.04489989 0.04582576 0.04664762 0.04208325
+ [109] 0.04702127 0.04489989 0.04330127 0.04737088 0.04624932 0.04386342
+ [115] 0.04270831 0.04582576 0.04664762 0.04769696 0.04582576 0.04624932
+ [121] 0.04537621 0.04582576 0.04537621 0.04330127 0.04769696 0.04489989
+ [127] 0.04489989 0.04702127 0.04386342 0.04702127 0.04664762 0.04702127
+ [133] 0.04918333 0.04537621 0.04537621 0.04489989 0.04702127 0.04664762
+ [139] 0.04439595 0.04853864 0.04489989 0.04537621 0.04800000 0.04330127
+ [145] 0.04877499 0.04624932 0.04489989 0.04664762 0.04664762 0.04664762
+ [151] 0.04702127 0.04000000 0.04664762 0.04853864 0.04386342 0.04624932
+ [157] 0.04737088 0.04537621 0.04386342 0.04828043 0.04624932 0.04073082
+ [163] 0.04877499 0.04664762 0.04439595 0.04853864 0.03923009 0.04624932
+ [169] 0.04537621 0.04664762 0.04386342 0.04624932 0.04853864 0.04828043
+ [175] 0.04208325 0.04769696 0.04769696 0.04800000 0.04769696 0.04624932
+ [181] 0.04582576 0.04664762 0.04769696 0.04702127 0.04935585 0.04386342
+ [187] 0.04489989 0.04439595 0.04624932 0.04877499 0.03923009 0.04439595
+ [193] 0.04664762 0.04702127 0.04664762 0.04582576 0.04624932 0.04330127
+ [199] 0.04582576 0.03841875 0.03841875 0.04330127 0.04582576 0.04828043
+ [205] 0.04624932 0.04582576 0.04386342 0.04769696 0.04386342 0.04439595
+ [211] 0.04828043 0.04664762 0.04702127 0.04664762 0.04439595 0.04974937
+ [217] 0.04489989 0.04582576 0.04624932 0.04537621 0.04386342 0.04702127
+ [223] 0.04537621 0.04208325 0.04853864 0.04537621 0.04330127 0.04582576
+ [229] 0.04330127 0.04142463 0.04000000 0.04624932 0.04582576 0.04489989
+ [235] 0.04769696 0.04737088 0.04537621 0.04918333 0.04582576 0.04737088
+ [241] 0.03923009 0.04386342 0.04737088 0.04439595 0.04489989 0.04270831
+ [247] 0.04664762 0.04624932 0.04624932 0.04489989 0.04624932 0.04582576
+ [253] 0.04439595 0.04439595 0.04737088 0.04624932 0.04853864 0.04737088
+ [259] 0.04624932 0.04537621 0.04142463 0.04664762 0.04073082 0.04270831
+ [265] 0.04386342 0.04439595 0.04877499 0.04800000 0.04386342 0.04800000
+ [271] 0.04489989 0.04664762 0.04330127 0.04624932 0.04582576 0.04386342
+ [277] 0.04208325 0.04330127 0.04702127 0.04386342 0.04769696 0.04624932
+ [283] 0.04769696 0.04330127 0.04664762 0.04853864 0.04330127 0.04664762
+ [289] 0.04489989 0.04963869 0.04877499 0.04439595 0.04918333 0.04439595
+ [295] 0.04439595 0.04877499 0.04330127 0.04800000 0.04664762 0.04769696
+ [301] 0.04142463 0.04489989 0.04769696 0.04439595 0.04664762 0.04624932
+ [307] 0.04582576 0.04537621 0.04537621 0.04270831 0.04877499 0.04537621
+ [313] 0.04737088 0.04000000 0.04664762 0.04582576 0.04769696 0.04439595
+ [319] 0.04537621 0.04582576 0.04537621 0.04800000 0.04702127 0.04664762
+ [325] 0.04439595 0.04702127 0.04489989 0.04898979 0.04702127 0.04489989
+ [331] 0.04737088 0.04537621 0.04386342 0.04800000 0.04208325 0.04918333
+ [337] 0.04439595 0.04489989 0.04769696 0.04702127 0.04386342 0.04769696
+ [343] 0.04664762 0.04439595 0.04624932 0.04769696 0.04624932 0.04439595
+ [349] 0.04537621 0.04386342 0.04769696 0.04439595 0.04737088 0.04769696
+ [355] 0.04489989 0.04898979 0.04386342 0.04439595 0.04664762 0.04800000
+ [361] 0.04624932 0.04800000 0.04800000 0.04664762 0.04664762 0.04582576
+ [367] 0.04439595 0.04208325 0.04664762 0.04330127 0.04702127 0.04439595
+ [373] 0.04330127 0.04664762 0.04624932 0.04537621 0.04800000 0.04853864
+ [379] 0.04073082 0.04330127 0.04702127 0.04439595 0.04489989 0.04386342
+ [385] 0.04624932 0.04270831 0.04898979 0.04702127 0.04439595 0.04624932
+ [391] 0.04270831 0.04664762 0.04330127 0.04702127 0.04582576 0.04386342
+ [397] 0.04000000 0.04624932 0.04624932 0.04386342 0.04537621 0.04664762
+ [403] 0.04489989 0.04702127 0.04537621 0.04800000 0.04537621 0.04537621
+ [409] 0.04898979 0.04828043 0.04582576 0.04737088 0.04664762 0.04537621
+ [415] 0.04489989 0.04000000 0.04439595 0.03923009 0.04702127 0.04582576
+ [421] 0.04737088 0.04489989 0.04330127 0.04439595 0.04664762 0.04537621
+ [427] 0.04737088 0.04769696 0.04537621 0.04624932 0.04270831 0.04737088
+ [433] 0.04489989 0.04582576 0.04624932 0.04386342 0.04664762 0.04664762
+ [439] 0.04737088 0.04624932 0.04828043 0.04737088 0.04208325 0.04208325
+ [445] 0.04330127 0.04330127 0.04489989 0.04664762 0.04142463 0.03756328
+ [451] 0.04769696 0.04537621 0.04828043 0.04537621 0.04935585 0.04737088
+ [457] 0.04582576 0.04664762 0.04769696 0.04624932 0.04439595 0.04702127
+ [463] 0.04737088 0.04624932 0.04439595 0.04439595 0.04800000 0.04386342
+ [469] 0.04537621 0.04270831 0.04489989 0.04702127 0.04489989 0.04439595
+ [475] 0.04439595 0.04800000 0.04702127 0.04624932 0.04800000 0.04582576
+ [481] 0.04582576 0.04582576 0.04208325 0.04702127 0.04386342 0.04582576
+ [487] 0.04582576 0.04624932 0.03923009 0.04489989 0.04537621 0.04270831
+ [493] 0.04737088 0.04386342 0.04386342 0.04769696 0.04737088 0.04489989
+ [499] 0.04439595 0.04664762 0.04702127 0.04489989 0.04582576 0.04702127
+ [505] 0.04537621 0.04853864 0.04828043 0.04800000 0.04270831 0.04439595
+ [511] 0.04270831 0.04489989 0.04208325 0.04330127 0.04664762 0.04877499
+ [517] 0.04664762 0.04537621 0.04898979 0.03923009 0.04828043 0.04800000
+ [523] 0.04537621 0.04737088 0.04582576 0.04853864 0.04330127 0.04582576
+ [529] 0.04142463 0.04386342 0.04330127 0.04935585 0.04582576 0.04702127
+ [535] 0.04664762 0.04270831 0.04386342 0.04582576 0.04702127 0.04582576
+ [541] 0.04489989 0.04582576 0.04537621 0.04582576 0.04853864 0.04489989
+ [547] 0.04439595 0.04918333 0.03923009 0.04853864 0.04737088 0.04582576
+ [553] 0.04877499 0.04737088 0.04489989 0.04439595 0.04386342 0.04439595
+ [559] 0.04702127 0.04664762 0.04386342 0.04702127 0.04142463 0.04769696
+ [565] 0.04537621 0.04142463 0.04489989 0.04537621 0.04439595 0.04386342
+ [571] 0.04537621 0.04439595 0.04702127 0.04439595 0.04439595 0.04737088
+ [577] 0.04537621 0.04142463 0.04624932 0.04489989 0.04664762 0.04439595
+ [583] 0.04769696 0.04664762 0.04537621 0.04270831 0.04489989 0.04769696
+ [589] 0.04664762 0.04582576 0.04737088 0.04489989 0.04489989 0.04828043
+ [595] 0.04737088 0.04330127 0.04537621 0.04800000 0.04624932 0.04582576
+ [601] 0.04142463 0.04208325 0.04664762 0.04386342 0.04439595 0.04582576
+ [607] 0.04737088 0.04489989 0.04330127 0.04664762 0.04073082 0.04489989
+ [613] 0.04828043 0.04386342 0.04664762 0.04624932 0.04769696 0.04664762
+ [619] 0.04386342 0.04624932 0.04582576 0.04439595 0.04582576 0.04769696
+ [625] 0.04737088 0.04737088 0.04624932 0.04537621 0.04270831 0.04769696
+ [631] 0.04769696 0.04737088 0.04386342 0.04664762 0.04489989 0.04624932
+ [637] 0.04702127 0.04800000 0.04935585 0.04935585 0.04537621 0.04489989
+ [643] 0.04877499 0.04624932 0.04664762 0.04769696 0.04800000 0.04439595
+ [649] 0.04330127 0.04439595 0.04800000 0.04702127 0.04769696 0.04582576
+ [655] 0.04582576 0.04800000 0.04664762 0.04702127 0.04439595 0.04737088
+ [661] 0.04737088 0.04270831 0.04664762 0.04800000 0.04439595 0.04800000
+ [667] 0.04769696 0.04537621 0.04142463 0.04702127 0.04386342 0.04624932
+ [673] 0.04073082 0.04582576 0.04270831 0.04439595 0.04624932 0.04582576
+ [679] 0.04624932 0.04898979 0.04702127 0.04769696 0.04702127 0.04270831
+ [685] 0.04737088 0.04624932 0.04624932 0.04537621 0.04664762 0.04582576
+ [691] 0.04489989 0.04582576 0.04664762 0.04537621 0.04537621 0.04935585
+ [697] 0.04489989 0.04270831 0.04702127 0.04489989 0.04737088 0.04664762
+ [703] 0.04439595 0.04664762 0.04737088 0.04702127 0.04582576 0.04489989
+ [709] 0.04582576 0.04537621 0.04582576 0.04489989 0.04624932 0.04769696
+ [715] 0.04800000 0.04624932 0.04439595 0.04537621 0.04898979 0.04702127
+ [721] 0.04582576 0.04664762 0.04624932 0.04439595 0.04769696 0.04439595
+ [727] 0.04769696 0.04386342 0.04439595 0.04489989 0.04664762 0.04898979
+ [733] 0.04624932 0.04270831 0.04702127 0.04664762 0.04439595 0.04439595
+ [739] 0.04537621 0.04582576 0.04208325 0.04664762 0.04702127 0.04330127
+ [745] 0.04386342 0.04439595 0.04582576 0.04702127 0.04737088 0.04386342
+ [751] 0.04537621 0.04439595 0.04386342 0.04769696 0.04664762 0.04270831
+ [757] 0.04582576 0.04828043 0.04582576 0.04489989 0.04330127 0.04270831
+ [763] 0.04439595 0.04386342 0.04489989 0.04439595 0.04582576 0.04853864
+ [769] 0.04386342 0.04737088 0.04386342 0.04582576 0.04386342 0.04800000
+ [775] 0.04582576 0.04537621 0.04624932 0.04489989 0.04624932 0.04828043
+ [781] 0.04537621 0.04386342 0.04386342 0.04537621 0.04537621 0.04664762
+ [787] 0.04537621 0.04828043 0.04439595 0.04537621 0.04386342 0.04624932
+ [793] 0.04624932 0.04270831 0.04142463 0.04270831 0.04386342 0.04439595
+ [799] 0.04439595 0.04537621 0.04439595 0.04489989 0.04624932 0.04624932
+ [805] 0.04270831 0.04582576 0.04702127 0.04330127 0.04142463 0.04142463
+ [811] 0.04664762 0.04702127 0.04769696 0.04582576 0.04537621 0.04208325
+ [817] 0.04800000 0.04386342 0.04877499 0.04537621 0.04828043 0.04664762
+ [823] 0.04439595 0.04898979 0.04270831 0.04702127 0.04737088 0.04330127
+ [829] 0.04828043 0.04918333 0.04624932 0.04439595 0.04853864 0.04664762
+ [835] 0.04624932 0.04664762 0.04769696 0.04330127 0.04439595 0.04702127
+ [841] 0.04386342 0.04769696 0.04702127 0.04624932 0.04582576 0.04828043
+ [847] 0.04582576 0.04537621 0.04664762 0.04330127 0.04489989 0.04439595
+ [853] 0.04000000 0.04737088 0.04386342 0.04439595 0.04737088 0.04270831
+ [859] 0.04537621 0.04624932 0.04208325 0.04737088 0.04769696 0.04702127
+ [865] 0.04800000 0.04664762 0.04386342 0.04800000 0.04489989 0.04386342
+ [871] 0.04330127 0.04537621 0.03923009 0.04828043 0.04537621 0.04142463
+ [877] 0.04439595 0.04800000 0.04208325 0.04582576 0.04386342 0.04582576
+ [883] 0.04439595 0.04702127 0.04582576 0.04582576 0.04624932 0.04537621
+ [889] 0.04800000 0.04828043 0.04828043 0.04877499 0.04489989 0.04270831
+ [895] 0.04330127 0.04702127 0.04386342 0.04624932 0.04439595 0.04270831
+ [901] 0.04664762 0.04935585 0.04664762 0.04208325 0.04664762 0.04664762
+ [907] 0.04624932 0.04489989 0.04386342 0.03923009 0.04624932 0.04800000
+ [913] 0.04853864 0.04702127 0.04386342 0.04582576 0.04624932 0.04386342
+ [919] 0.04853864 0.04702127 0.04537621 0.04386342 0.04073082 0.04439595
+ [925] 0.04142463 0.04702127 0.04386342 0.04769696 0.04000000 0.04073082
+ [931] 0.04769696 0.04624932 0.04439595 0.04142463 0.04664762 0.04330127
+ [937] 0.04330127 0.04664762 0.04489989 0.04537621 0.04208325 0.04439595
+ [943] 0.04877499 0.04386342 0.04537621 0.04800000 0.04737088 0.04737088
+ [949] 0.04582576 0.04489989 0.04537621 0.04582576 0.04537621 0.04800000
+ [955] 0.04800000 0.04439595 0.04489989 0.04898979 0.04853864 0.04386342
+ [961] 0.04537621 0.04386342 0.04489989 0.04330127 0.04537621 0.04386342
+ [967] 0.04439595 0.04439595 0.04208325 0.04800000 0.04582576 0.04489989
+ [973] 0.03923009 0.04489989 0.04537621 0.04537621 0.04935585 0.04330127
+ [979] 0.04386342 0.04800000 0.04439595 0.04582576 0.04624932 0.04702127
+ [985] 0.04330127 0.04702127 0.04664762 0.04624932 0.04000000 0.04664762
+ [991] 0.04582576 0.04800000 0.04800000 0.04537621 0.04853864 0.04386342
+ [997] 0.04624932 0.04582576 0.04439595 0.04489989
+
+$reject_null
+   [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [112] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [149] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [186] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [223] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [260] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [297] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [334] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [371] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [408] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [445] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [482] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [519] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [556] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [593] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [630] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [667] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [704] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [741] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [778] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [815] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [852] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [889] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [926] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [963] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+[1000] 1
+
+[[10]]
+   [1] 1 1 1 1 1 1 1 1 1 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1
+  [38] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 1 1 1 1 1 1 1 0 1 1 1 1 1 0 0 1
+  [75] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [112] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [149] 1 1 1 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0
+ [186] 1 1 1 1 1 0 1 1 1 1 1 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1
+ [223] 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [260] 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 1 1 1
+ [297] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1
+ [334] 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [371] 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1
+ [408] 1 0 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [445] 1 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [482] 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [519] 0 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 1 1
+ [556] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [593] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [630] 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [667] 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1
+ [704] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1
+ [741] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [778] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [815] 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [852] 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+ [889] 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1
+ [926] 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1
+ [963] 1 1 1 1 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1
+[1000] 1
+
+$true_se
+[1] 0.04582576
+
+$MLE_mean
+[1] 0.69911
+
+$MLE_bias
+[1] -0.00089
+
+$MLE_se
+[1] 0.0474506
+
+$MLE_var
+[1] 0.002251559
+
+$SE_bias
+[1] -0.0002558186
+
+$SE_mean
+[1] 0.04556994
+
+$SE_se
+[1] 0.002108119
+
+$SE_var
+[1] 4.444164e-06
+
+$p_CI
+[1] 0.935
+
+$p_reject
+[1] 1</code></pre>
+</div>
+</div>
+<p><em>1.19 (2 points)</em></p>
+<p><em>Create histograms and boxplots of the MLEs and estimated standard errors, with lines indicating the theoretical values.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>MLE <span class="ot">&lt;-</span> sim_1000_results[[<span class="st">"sim_results"</span>]][[<span class="st">"estimates"</span>]]</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>MLE_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">MLE =</span> MLE)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>histogram_MLE <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(MLE_df, <span class="fu">aes</span>(<span class="at">x =</span> MLE)) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.01</span>, <span class="at">fill =</span> <span class="st">"lightgreen"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of MLE"</span>, <span class="at">x =</span> <span class="st">"MLE"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+ℹ Please use `linewidth` instead.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the histogram</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(histogram_MLE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>box_MLE <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(MLE_df, <span class="fu">aes</span>(<span class="at">x =</span> MLE)) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"lightblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boxplot of MLE"</span>, <span class="at">x =</span> <span class="st">"MLE"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the histogram</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(box_MLE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-11-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>Est_se <span class="ot">&lt;-</span> sim_1000_results[[<span class="st">"sim_results"</span>]][[<span class="st">"errors"</span>]]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>se_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Standard_Error =</span> Est_se)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>histogram_se <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(se_df, <span class="fu">aes</span>(<span class="at">x =</span> Standard_Error)) <span class="sc">+</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.001</span>, <span class="at">fill =</span> <span class="st">"lightgreen"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.0458</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of SE"</span>, <span class="at">x =</span> <span class="st">"SE"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the histogram</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(histogram_se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-11-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>box_se <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(se_df, <span class="fu">aes</span>(<span class="at">x =</span> Standard_Error)) <span class="sc">+</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">binwidth =</span> <span class="fl">0.001</span>, <span class="at">fill =</span> <span class="st">"lightblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span> <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.0458</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Boxplot of SE"</span>, <span class="at">x =</span> <span class="st">"SE"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in geom_boxplot(binwidth = 0.001, fill = "lightblue", color = "black"):
+Ignoring unknown parameters: `binwidth`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the histogram</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(box_se)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="204_hw1_files/figure-html/unnamed-chunk-11-4.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p><em>1.20 (2 points)</em></p>
+<p><em>Using your 1000 simulations:</em></p>
+<p><em>• the mean of the MLE =</em> 0.69911</p>
+<p><em>• the bias of the MLE =</em> -0.00089</p>
+<p><em>• the empirical variance of the MLE =</em> 0.002251559</p>
+<p><em>• the empirical standard error of the MLE =</em> 0.0474506</p>
+<p><em>• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛</em></p>
+<p>0.04556994</p>
+<p><em>• the bias of the estimated standard error =</em> -0.0002558186</p>
+<p><em>• the variance of the estimated standard error =</em> 4.444166e-06</p>
+<p><em>• the standard error of the estimated standard error =</em> 0.002108119</p>
+<p><em>• the coverage probability of the confidence intervals =</em> 0.935</p>
+<p><em>• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1</em></p>
+<p><em>1.21 (2 points)</em></p>
+<p><em>Summarize the performance of your analyses, comparing empirical and theoretical results.</em></p>
+<p>In a 1000 simulation, the mean of the MLE is 0.69911, which is very close to the theoretical <span class="math inline">\(\pi\)</span> of 0.7. The bias is very close to 0, which means the MLE from the simulation is close to nonbiased. The mean of the standard error is 0.04556994, which is also close to 0.458, the theoretical standard error. Both the bias and the variance of the estimated standard error is close to 0, which means the estimation is very good. The performance of the analyses is great. With 1000 simulation we can provide an estimate that is very close to the true value of the parameter.</p>
+<p><em>1.22 (2 points)</em></p>
+<p><em>Repeat the simulation with a simulated sample sizes of 10^3 and 10^5 binary outcomes, and summarize the results. Compare the empirical results with the theoretical results above.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>sim_1000_results_n1000 <span class="ot">&lt;-</span> <span class="fu">sim_func</span>(<span class="at">n=</span><span class="dv">1000</span>, <span class="at">nsims=</span><span class="dv">1000</span>, <span class="at">pi=</span><span class="fl">0.7</span>, <span class="at">null=</span> <span class="fl">0.5</span>, <span class="at">alpha=</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>n = 10^3:</p>
+<p><em>• the mean of the MLE =</em> 0.699708</p>
+<p><em>• the bias of the MLE =</em> -0.000292</p>
+<p><em>• the empirical variance of the MLE =</em> 0.000218225</p>
+<p><em>• the empirical standard error of the MLE =</em> 0.01477244</p>
+<p><em>• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛</em></p>
+<p>0.01448644</p>
+<p><em>• the bias of the estimated standard error =</em> -4.939105e-06</p>
+<p><em>• the variance of the estimated standard error =</em> 4.187434e-08</p>
+<p><em>• the standard error of the estimated standard error =</em> 0.0002046322</p>
+<p><em>• the coverage probability of the confidence intervals = 0.941</em></p>
+<p><em>• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sim_1000_results_n10_5 <span class="ot">&lt;-</span> <span class="fu">sim_func</span>(<span class="at">n=</span><span class="dv">100000</span>, <span class="at">nsims=</span><span class="dv">1000</span>, <span class="at">pi=</span><span class="fl">0.7</span>, <span class="at">null=</span> <span class="fl">0.5</span>, <span class="at">alpha=</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>n = 10^5:</p>
+<p><em>• the mean of the MLE =</em> 0.7000066</p>
+<p><em>• the bias of the MLE =</em> 6.59e-06</p>
+<p><em>• the empirical variance of the MLE =</em> 2.181415e-06</p>
+<p><em>• the empirical standard error of the MLE =</em> 0.001476961</p>
+<p><em>• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛</em></p>
+<p>0.00144912</p>
+<p><em>• the bias of the estimated standard error =</em> -1.804733e-08</p>
+<p><em>• the variance of the estimated standard error =</em> 4.157186e-12</p>
+<p><em>• the standard error of the estimated standard error =</em> 2.038918e-06</p>
+<p><em>• the coverage probability of the confidence intervals = 0.948</em></p>
+<p><em>• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1</em></p>
+<p>It is clear that as the sample size increases, the results of the estimation is closer to the theoretical values.</p>
+<p><em>1.23 (2 points)</em></p>
+<p><em>Repeat the simulation at all three sample sizes for the scenario where the data-generating parameter 𝜋 = 0.5, thus matching the null hypothesis. Empirically assess the false positive rate of the hypothesis test.</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sim_func_0<span class="fl">.5</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n, nsims, pi, null, alpha){</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  estimates <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  errors <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  reject_null <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  CI_true_val <span class="ot">&lt;-</span> <span class="fu">numeric</span>(nsims)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nsims){</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set.seed</span>(i)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    x.i <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n,<span class="dv">1</span>,<span class="fl">0.5</span>)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    est <span class="ot">&lt;-</span> <span class="fu">mean</span>(x.i)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>    se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(est<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>est)<span class="sc">/</span>n)</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    se_null <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(null<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>null)<span class="sc">/</span>n)</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    ci_radius <span class="ot">&lt;-</span> se<span class="sc">*</span><span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    ci <span class="ot">&lt;-</span> est<span class="sc">+</span><span class="fu">c</span>(<span class="sc">-</span>ci_radius,ci_radius)</span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>    z_stat <span class="ot">&lt;-</span> <span class="fu">abs</span>(est<span class="sc">-</span>null<span class="sc">/</span>se_null)</span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>    pval <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(z_stat, <span class="at">lower=</span><span class="cn">FALSE</span>)<span class="sc">*</span><span class="dv">2</span></span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    estimates[i] <span class="ot">&lt;-</span> est</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    errors[i] <span class="ot">&lt;-</span> se</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    reject_null[i] <span class="ot">&lt;-</span> pval<span class="sc">&lt;</span>alpha</span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>    CI_true_val[i] <span class="ot">&lt;-</span> (pi<span class="sc">&gt;</span>ci[<span class="dv">1</span>]<span class="sc">&amp;</span>pi<span class="sc">&lt;</span>ci[<span class="dv">2</span>])</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>  true_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(pi<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>pi)<span class="sc">/</span>n)</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>  sim_results <span class="ot">&lt;-</span><span class="fu">tibble</span>(</span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>  estimates,</span>
+<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>  errors,</span>
+<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>  reject_null,</span>
+<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>  CI_true_val)</span>
+<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">n=</span>n,</span>
+<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">nsims=</span>nsims,</span>
+<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">pi=</span>pi,</span>
+<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">null=</span>null,</span>
+<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha=</span>alpha,</span>
+<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">sim_results=</span>sim_results,</span>
+<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimates=</span>estimates,</span>
+<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">errors=</span>errors,</span>
+<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">reject_null=</span>reject_null,</span>
+<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>    CI_true_val,</span>
+<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">true_se=</span>true_se,</span>
+<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_mean=</span><span class="fu">mean</span>(estimates),</span>
+<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_bias=</span><span class="fu">mean</span>(estimates)<span class="sc">-</span>pi,</span>
+<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_se=</span><span class="fu">sd</span>(estimates),</span>
+<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">MLE_var=</span><span class="fu">sd</span>(estimates)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_bias=</span><span class="fu">mean</span>(errors)<span class="sc">-</span>true_se,</span>
+<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_mean=</span><span class="fu">mean</span>(errors),</span>
+<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_se=</span><span class="fu">sd</span>(errors),</span>
+<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">SE_var=</span><span class="fu">sd</span>(errors)<span class="sc">^</span><span class="dv">2</span>,</span>
+<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_CI=</span><span class="fu">mean</span>(CI_true_val),</span>
+<span id="cb36-55"><a href="#cb36-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_reject=</span><span class="fu">mean</span>(reject_null)</span>
+<span id="cb36-56"><a href="#cb36-56" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-57"><a href="#cb36-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-58"><a href="#cb36-58" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-59"><a href="#cb36-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb36-60"><a href="#cb36-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb36-61"><a href="#cb36-61" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb36-62"><a href="#cb36-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-63"><a href="#cb36-63" aria-hidden="true" tabindex="-1"></a>sim_1000_results_n100_0<span class="fl">.5</span> <span class="ot">&lt;-</span> <span class="fu">sim_func_0.5</span>(<span class="at">n=</span><span class="dv">100</span>, <span class="at">nsims=</span><span class="dv">1000</span>, <span class="at">pi=</span><span class="fl">0.5</span>, <span class="at">null=</span> <span class="fl">0.5</span>, <span class="at">alpha=</span><span class="fl">0.05</span>)</span>
+<span id="cb36-64"><a href="#cb36-64" aria-hidden="true" tabindex="-1"></a>sim_1000_results_n1000_0<span class="fl">.5</span> <span class="ot">&lt;-</span> <span class="fu">sim_func_0.5</span>(<span class="at">n=</span><span class="dv">1000</span>, <span class="at">nsims=</span><span class="dv">1000</span>, <span class="at">pi=</span><span class="fl">0.5</span>, <span class="at">null=</span> <span class="fl">0.5</span>, <span class="at">alpha=</span><span class="fl">0.05</span>)</span>
+<span id="cb36-65"><a href="#cb36-65" aria-hidden="true" tabindex="-1"></a>sim_1000_results_n100000_0<span class="fl">.5</span> <span class="ot">&lt;-</span> <span class="fu">sim_func_0.5</span>(<span class="at">n=</span><span class="dv">100000</span>, <span class="at">nsims=</span><span class="dv">1000</span>, <span class="at">pi=</span><span class="fl">0.5</span>, <span class="at">null=</span> <span class="fl">0.5</span>, <span class="at">alpha=</span><span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>n = 100:</p>
+<p><em>• the mean of the MLE =</em> 0.49886</p>
+<p><em>• the bias of the MLE =</em> -0.00114</p>
+<p><em>• the empirical variance of the MLE =</em> 0.00262913</p>
+<p><em>• the empirical standard error of the MLE =</em> 0.05127504</p>
+<p><em>• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛</em></p>
+<p>0.04973516</p>
+<p><em>• the bias of the estimated standard error =</em> -0.0002648438</p>
+<p><em>• the variance of the estimated standard error =</em> 1.363786e-07</p>
+<p><em>• the standard error of the estimated standard error =</em> 0.0003692948</p>
+<p><em>• the coverage probability of the confidence intervals =</em> 0.939</p>
+<p><em>• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1</em></p>
+<p>n=1000:</p>
+<p><em>• the mean of the MLE =</em> 0.500702</p>
+<p><em>• the bias of the MLE =</em> 0.000702</p>
+<p><em>• the empirical variance of the MLE =</em> 0.0002626138</p>
+<p><em>• the empirical standard error of the MLE =</em> 0.01620536</p>
+<p><em>• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛</em></p>
+<p>0.01580307</p>
+<p><em>• the bias of the estimated standard error =</em> -8.318114e-06</p>
+<p><em>• the variance of the estimated standard error =</em> 1.288066e-10</p>
+<p><em>• the standard error of the estimated standard error =</em> 1.13493e-05</p>
+<p><em>• the coverage probability of the confidence intervals = 0.936</em></p>
+<p><em>• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1</em></p>
+<p>n=100000</p>
+<p><em>• the mean of the MLE =</em> 0.4999326</p>
+<p><em>• the bias of the MLE =</em> -6.743e-05</p>
+<p><em>• the empirical variance of the MLE =</em> 2.510577e-06</p>
+<p><em>• the empirical standard error of the MLE =</em> 0.00158448</p>
+<p><em>• the mean of the estimated standard error, 𝑆𝐸̂ = 𝜋̂(1 − 𝜋̂)/√𝑛</em></p>
+<p>0.001581131</p>
+<p><em>• the bias of the estimated standard error =</em> -7.945639e-09</p>
+<p><em>• the variance of the estimated standard error =</em> 1.210578e-16</p>
+<p><em>• the standard error of the estimated standard error =</em> 1.100263e-08</p>
+<p><em>• the coverage probability of the confidence intervals =</em> 0.944</p>
+<p><em>• the power of your hypothesis test to reject the null hypothesis 𝐻0 ∶ 𝜋 = 0.5 = 1</em></p>
+<p>False positive rate = 1 - power = 1 - 1 =0</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
